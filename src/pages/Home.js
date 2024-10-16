@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Carteirinha from '../components/Carteirinha';
 import AdaptiveCard from '../components/AdaptativeCard';
-import { Newspaper } from 'lucide-react-native';
+import { Newspaper, BellRing } from 'lucide-react-native';
 import DailyVote from '../components/DailyVote';
 import FinanceCard from '../components/FinanceCard'; 
 
@@ -41,6 +41,19 @@ export default function Home() {
               <FinanceCard />
             </View>
           </AdaptiveCard>
+
+          <View style={styles.titleContainer}>
+            <BellRing size={24} color="#FFFFFF" style={styles.titleIcon} />
+            <Text style={styles.title}>Ultimas notificações</Text>
+          </View>
+
+          <AdaptiveCard>
+            <View style={styles.innerCard}>
+              <Text style={{ color: '#FFFFFF' }}>Nenhuma notificação</Text>
+            </View>
+          </AdaptiveCard>
+
+
         </View>
       </View>
     </ImageBackground>
