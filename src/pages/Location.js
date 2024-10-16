@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ImageBackground, Animated, TouchableOpacity, Image } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BusFront, MapPinCheck } from 'lucide-react-native';
+import { BusFront, MapPinCheck, MapPinPlus } from 'lucide-react-native';
 import { Entypo } from '@expo/vector-icons';
 import * as LocationAPI from 'expo-location'; 
 import MapView, { Marker } from 'react-native-maps';
@@ -22,7 +22,7 @@ const TravelInfoCard = () => {
       <Text style={styles.tripInfo}>Viagem de 30 minutos (40 km)</Text>
       <View style={styles.dashedLine} />
       <View style={styles.destinationContainer}>
-        <MapPinCheck size={20} color="#D4D4D8" style={styles.pinIcon} />
+        <MapPinCheck size={24} color="#D4D4D8" style={styles.pinIcon} />
         <Text style={styles.label}>
           Destino: <Text style={styles.value}>Atitus Edu</Text>
         </Text>
@@ -30,7 +30,9 @@ const TravelInfoCard = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Horários</Text>
       </TouchableOpacity>
-      <Line />
+      <View style={{ marginTop: 10 }}>
+        <Line />
+      </View>
       <Text style={styles.tripDescription}>
         Saída do Hotel Plaza Sul com destino à Atitus Educação. Retorno previsto para as 22:20, com embarque na lateral da Atitus.
       </Text>
@@ -39,13 +41,13 @@ const TravelInfoCard = () => {
 };
 
 export default function Location() {
-  const translateY = useRef(new Animated.Value(585)).current; 
+  const translateY = useRef(new Animated.Value(590)).current; 
   const [isPulled, setIsPulled] = useState(false); 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
   const toggleCard = () => {
-    const toValue = isPulled ? 585 : 0;
+    const toValue = isPulled ? 590 : 0;
     Animated.timing(translateY, {
       toValue: toValue,
       duration: 800,
@@ -125,6 +127,7 @@ export default function Location() {
 
           <Animated.View style={[styles.card, { transform: [{ translateY }] }]}>
             <View style={styles.cardHeader}>
+              <MapPinPlus size={24} color="#D4D4D8" style={styles.icon} />
               <Text style={styles.cardTitle}>Informações da Viagem</Text>
               <TouchableOpacity style={styles.iconContainer} onPress={toggleCard}>
                 <Entypo name={isPulled ? "chevron-thin-down" : "chevron-thin-up"} size={20} color="#D4D4D8" />
@@ -188,21 +191,23 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 20,
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center', 
+    
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between', 
     width: '100%',
   },
   cardTitle: {
     fontSize: 25,
     fontWeight: "700",
     color: "#FFFFFF",
-    textAlign: 'center',
-    flex: 1,
-    left: 10,
+    textAlign: 'center', 
+    flex: 1, 
+    right: 10,
+    marginBottom: 10,
   },
   cardSubtitle: {
     color: '#D4D4D8',
@@ -271,6 +276,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  line: {
+    marginTop: 20,
+  },
   progressBar: {
     height: 4,
     backgroundColor: '#007bff',
@@ -286,5 +294,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
     textAlign: 'center',
+  },
+  iconContainer: {
+    position: 'absolute',
+    right: 0,
+  },
+  icon: {
+    marginRight: 10,
   },
 });

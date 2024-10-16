@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    marginTop: 5,
   },
   gradientBackground: {
     width: "80%",
