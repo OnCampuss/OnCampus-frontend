@@ -3,12 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity} from 'react-native';
 
 import Home from './pages/Home';
 import Voting from './pages/Voting';
 import Location from './pages/Location';
-import Config from './pages/Config';
+import Profile from './pages/Profile';
 import ButtonNew from './components/ButtonNew';
 
 const Tab = createBottomTabNavigator();
@@ -37,14 +37,14 @@ export default function Routes() {
             fontWeight: 'bold',
             fontSize: 18,
           },
-          headerBackVisible: true, // Ativa a visibilidade do botão de voltar nativo
+          headerBackVisible: true, 
           headerRight: () => (
             <Feather 
               name="bell" 
               size={24} 
               color="white" 
               style={{ marginRight: 15 }} 
-              onPress={() => alert('Configurações')} 
+              onPress={() => alert('Profile')} 
             />
           ),
         })}
@@ -68,22 +68,27 @@ export default function Routes() {
         />
         
         <Tab.Screen 
-          name="Localização" 
-          component={Location} 
-          options={{
-            tabBarIcon: ({ size, color }) => (
-              <Feather name="map-pin" size={size} color={color} />
-            ),
-            headerTitle: () => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
-                  Localização
-                </Text>
-                <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
-              </View>
-            ),
-          }}
-        />
+        name="Localização" 
+        component={Location} 
+        options={({ navigation }) => ({
+          tabBarIcon: ({ size, color }) => (
+            <Feather name="map-pin" size={size} color={color} />
+          ),
+          headerTitle: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
+                Localização
+              </Text>
+              <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
+            </View>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 16 }}>
+              <Feather name="chevron-left" size={24} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
         
         <Tab.Screen 
           name="Novo" 
@@ -123,16 +128,16 @@ export default function Routes() {
         />
         
         <Tab.Screen 
-          name="Configurações" 
-          component={Config} 
+          name="Profile" 
+          component={Profile} 
           options={{
             tabBarIcon: ({ size, color }) => (
-              <Feather name="settings" size={size} color={color} />
+              <Feather name="user" size={size} color={color} />
             ),
             headerTitle: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
-                  Configurações
+                  Profile
                 </Text>
                 <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
               </View>

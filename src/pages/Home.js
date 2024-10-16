@@ -1,13 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground, Text } from 'react-native';
+import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import Carteirinha from '../components/Carteirinha';
 import AdaptiveCard from '../components/AdaptativeCard';
+import { Newspaper } from 'lucide-react-native';
 import DailyVote from '../components/DailyVote';
 import FinanceCard from '../components/FinanceCard'; 
+
 const backgroundImage = require('../images/Group.png');
 
 export default function Home() {
+  const navigation = useNavigation();
+
   return (
     <ImageBackground 
       source={backgroundImage}
@@ -18,16 +23,18 @@ export default function Home() {
         <Carteirinha />
         
         <View style={styles.titleContainer}>
-          <Feather name="book" size={24} color="#FFFFFF" style={styles.titleIcon} />
+          <Newspaper size={24} color="#FFFFFF" style={styles.titleIcon} />
           <Text style={styles.title}>Seu Feed</Text>
         </View>
 
         <View style={styles.cardsContainer}>
-          <AdaptiveCard>
-            <View style={styles.innerCard}>
-              <DailyVote />
-            </View>
-          </AdaptiveCard>
+          <TouchableOpacity onPress={() => navigation.navigate('Votação')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <DailyVote />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
 
           <AdaptiveCard>
             <View style={styles.innerCard}>
