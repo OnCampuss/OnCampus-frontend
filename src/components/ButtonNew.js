@@ -1,19 +1,38 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Entypo } from "@expo/vector-icons";
+import { DollarSign, Settings, Handshake } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ButtonNew({ focused, size }) {
   const [showOptions, setShowOptions] = useState(false);
+  const navigation = useNavigation();
 
   const handlePress = () => {
-    setShowOptions(!showOptions); 
+    setShowOptions(!showOptions);
   };
 
   const navigateToOption = (option) => {
-    console.log(`Navegando para: ${option}`);
+    switch (option) {
+      case "Opção 1":
+        navigation.navigate("Finance"); // Navegar para a tela Settings
+        break;
+      case "Opção 2":
+        navigation.navigate("Settings"); // Navegar para a tela Terms Policy
+        break;
+      case "Opção 3":
+        navigation.navigate("TermsPolicy"); // Navegar para a tela Finance (ou a tela que você desejar)
+        break;
+      default:
+        break;
+    }
   };
 
-  const options = ["Opção 1", "Opção 2", "Opção 3"];
+  const options = [
+    { icon: <DollarSign size={24} color="white" />, option: "Opção 1" }, // Para Settings
+    { icon: <Settings size={24} color="white" />, option: "Opção 2" }, // Para Terms Policy
+    { icon: <Handshake size={24} color="white" />, option: "Opção 3" }, // Para Finance
+  ];
 
   return (
     <View style={styles.container}>
@@ -29,13 +48,13 @@ export default function ButtonNew({ focused, size }) {
 
       {showOptions && (
         <View style={styles.optionsContainer}>
-          {options.map((option, index) => (
+          {options.map(({ icon, option }, index) => (
             <TouchableOpacity
               key={option}
               style={styles.optionButton}
               onPress={() => navigateToOption(option)}
             >
-              <Text style={styles.optionText}>{option}</Text>
+              {icon}
             </TouchableOpacity>
           ))}
         </View>
@@ -67,12 +86,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 95,
     left: "-30%",
-    transform: [{ translateX: -60 }], 
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    width: 180, 
-    height: 60, 
-    gap: 10, 
+    transform: [{ translateX: -60 }],
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 180,
+    height: 60,
+    gap: 10,
   },
   optionButton: {
     width: 70,
@@ -81,8 +100,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#3B82F6",
-  },
-  optionText: {
-    color: "white",
+    borderWidth: 2,
+    borderColor: "white",
+    shadowColor: "#000",
   },
 });

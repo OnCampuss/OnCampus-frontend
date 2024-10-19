@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ImageBackground, Image, Text, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ImageBackground, Image, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import Card from '../components/Card'
+import Card from '../components/Card';
+import Title from '../components/Title';
+import Line from '../components/Line';
+import HairLine from '../components/HairLine';
+import { UserRoundCogIcon, UserIcon, ChevronRight } from 'lucide-react-native';
 
 const backgroundImage = require('../images/Group.png');
-const bannerImage = require('../images/banner.jpg'); 
+const bannerImage = require('../images/banner.jpg');
 const profileImage = require('../images/profile.jpg');
- 
 
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
-  const userData = { enrollmentNumber: '123456789' }; 
+  const userData = { enrollmentNumber: '123456789' };
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -21,32 +24,53 @@ export default function Config() {
       style={styles.background}
       resizeMode="cover"
     >
-      <View style={styles.bannerContainer}>
-        <ImageBackground 
-          source={bannerImage}
-          style={styles.banner}
-          resizeMode="cover"
-        />
-      </View>
-      <Image source={profileImage} style={styles.profileImage} />
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.title}>John Doe</Text>
-        <Text style={styles.subtitle}>Ciência da Computação</Text>
-        <TouchableOpacity onPress={toggleModal}>
-          <QRCode
-            value={userData.enrollmentNumber}
-            size={120}
-            color='#ffffff'
-            backgroundColor='transparent'
-            style={styles.qrCode}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.bannerContainer}>
+          <ImageBackground 
+            source={bannerImage}
+            style={styles.banner}
+            resizeMode="cover"
           />
-        </TouchableOpacity>
-      </View>
+        </View>
+        <View style={styles.profileContainer}>
+          <Image source={profileImage} style={styles.profileImage} />
+          <View style={styles.infoContainer}>
+            <Title>John Doe</Title>
+            <Text style={styles.subtitle}>Ciência da Computação</Text>
+            <TouchableOpacity onPress={toggleModal}>
+              <QRCode
+                value={userData.enrollmentNumber}
+                size={120}
+                color='#ffffff'
+                backgroundColor='transparent'
+                style={styles.qrCode}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-      <Card height={420} style={styles.card}>
-        
-        </Card>
+        <View style={styles.cardContainer}>
+          <Card height={400} style={styles.card}>
+            <View style={styles.cardContent}>
+              <View style={styles.titleContainer}>
+                <UserRoundCogIcon size={24} color="#D4D4D8" />
+                <Title>Seus Dados</Title>
+              </View>
+              <Line />
+              <Text style={styles.subText}>
+                Edite suas informações de perfil abaixo. Mantenha seus dados atualizados para garantir uma experiência personalizada.
+              </Text>
+              <View style={styles.headerContainer}>
+                <UserIcon size={24} color="#D4D4D8" />
+                <Text style={styles.titleWithIcon}>Dados Pessoais</Text>
+                <View style={{ flex: 1 }} />
+                <ChevronRight size={24} color="#D4D4D8" />
+              </View>
+              <HairLine />
+            </View>
+          </Card>
+        </View>
+      </ScrollView>
 
       <Modal
         animationType="slide"
@@ -74,6 +98,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#171717',
   },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
   bannerContainer: {
     width: '100%',
     height: 150,
@@ -84,37 +118,60 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  cardContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 150,
+    bottom: 62.5,
+  },
   profileImage: {
     width: 125,
     height: 125,
     borderRadius: 62.5,
-    position: 'absolute',
-    top: 85,
-    left: '50%',
-    marginLeft: -62.5,
     borderWidth: 2,
     borderColor: '#2563EB',
   },
   infoContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    bottom: 50,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'medium',
     color: '#ffffff',
     marginBottom: 10,
   },
-  qrCode: {
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginVertical: 5,
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  titleWithIcon: {
+    marginLeft: 8,
+    color: '#D4D4D8',
+    fontSize: 18,
+  },
+  subText: {
+    color: '#D4D4D8',
+    textAlign: 'center',
+    marginHorizontal: 20,
+    fontSize: 10,
     marginTop: 10,
+  },
+  cardContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 5,
+    paddingTop: 10,
   },
   modalContainer: {
     flex: 1,

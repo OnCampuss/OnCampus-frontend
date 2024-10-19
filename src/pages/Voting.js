@@ -22,7 +22,7 @@ export default function Voting() {
   const calculateTimeRemaining = () => {
     const now = new Date();
     const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0, 0);
-    
+
     if (now < end) {
       const diffInMilliseconds = end - now;
       const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
@@ -55,7 +55,7 @@ export default function Voting() {
     >
       <View style={styles.container}>
         <View style={{ marginBottom: 20 }}>
-          <Card height={420} style={styles.card}>
+          <Card height={460} style={styles.card}>
             <View style={styles.textContainer}>
               <View style={styles.titleContainer}>
                 <SquareCheck size={24} color="#D4D4D8" />
@@ -80,17 +80,23 @@ export default function Voting() {
             </View>
           </Card>
         </View>
-  
+
         <View style={{ marginBottom: 20 }}>
-          <Card height={110} style={styles.timerCard}>
+          <Card height={110}>
             <View style={styles.timerContainer}>
               <Timer size={20} color="#D4D4D8" />
               <Text style={styles.timerTitle}>Tempo restante para votação</Text>
             </View>
             <Line />
             <View style={styles.timerDisplay}>
-              <Text style={styles.timerText}>{timeRemaining}</Text>
-              <Text style={styles.secondsText}>{secondsRemaining < 10 ? `:0${secondsRemaining}` : `:${secondsRemaining}`}</Text> 
+              {timeRemaining === '00:00' ? (
+                <Text style={styles.timerText}>Votação encerrada</Text>
+              ) : (
+                <>
+                  <Text style={styles.timerText}>{timeRemaining}</Text>
+                  <Text style={styles.secondsText}>{secondsRemaining < 10 ? `:0${secondsRemaining}` : `:${secondsRemaining}`}</Text>
+                </>
+              )}
             </View>
             <Line />
           </Card>
@@ -173,19 +179,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  timerCard: {
-    backgroundColor: '#3F3F46',
-    borderRadius: 15,
-    borderColor: '#FFFFFF',
-    borderWidth: 1,
-    padding: 20,
-    marginTop: 20,
-    alignItems: 'center',
-  },
   timerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 15,
   },
   timerTitle: {
     fontSize: 22,
@@ -201,7 +199,7 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 30,
-    color: '#FFDD57',
+    color: '#e63946',
     fontWeight: 'bold',
   },
   secondsText: {

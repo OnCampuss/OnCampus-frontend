@@ -7,6 +7,7 @@ import AdaptiveCard from '../components/AdaptativeCard';
 import { Newspaper, BellRing } from 'lucide-react-native';
 import DailyVote from '../components/DailyVote';
 import FinanceCard from '../components/FinanceCard'; 
+import Title from '../components/Title';
 
 const backgroundImage = require('../images/Group.png');
 
@@ -24,7 +25,7 @@ export default function Home() {
         
         <View style={styles.titleContainer}>
           <Newspaper size={24} color="#FFFFFF" style={styles.titleIcon} />
-          <Text style={styles.title}>Seu Feed</Text>
+          <Title>Seu Feed</Title>
         </View>
 
         <View style={styles.cardsContainer}>
@@ -44,7 +45,7 @@ export default function Home() {
 
           <View style={styles.titleContainer}>
             <BellRing size={24} color="#FFFFFF" style={styles.titleIcon} />
-            <Text style={styles.title}>Ultimas notificações</Text>
+            <Title>Ultimas notificações</Title>
           </View>
 
           <AdaptiveCard>
@@ -70,20 +71,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 20,
-  },
-  titleContainer: {
+  },titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
     marginBottom: 10,
   },
-  title: {
-    fontSize: 24,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  titleIcon: {},
   cardsContainer: {
     width: '100%',
     alignItems: 'center',

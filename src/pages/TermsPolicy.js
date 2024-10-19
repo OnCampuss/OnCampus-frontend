@@ -1,9 +1,9 @@
-// pages/Finance.js
+// pages/TermsPolicy.js
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-const Finance = ({ navigation }) => {
+const TermsPolicy = ({ navigation }) => {
   const handleLogout = () => {
     Alert.alert(
       "Logout",
@@ -28,7 +28,7 @@ const Finance = ({ navigation }) => {
         <Text style={styles.optionText}>Perfil</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Finance')}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('TermsPolicy')}>
         <Feather name="dollar-sign" size={24} color="#000" />
         <Text style={styles.optionText}>Finanças</Text>
       </TouchableOpacity>
@@ -71,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Finance;
+export default TermsPolicy;
