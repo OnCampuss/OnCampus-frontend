@@ -1,5 +1,6 @@
+// pages/Login.js
 import React, { useState } from "react";
-import { View, TextInput, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, TextInput, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Mail, LockKeyhole } from 'lucide-react-native';
 import { auth } from "../services/firebase";
@@ -10,7 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const backgroundImage = require('../images/Group.png');
 const vectorImage = require('../images/Vector.png');
 
-const Login = ({ onLogin }) => {
+export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
@@ -185,5 +186,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-export default Login;

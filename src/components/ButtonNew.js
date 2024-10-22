@@ -15,13 +15,13 @@ export default function ButtonNew({ focused, size }) {
   const navigateToOption = (option) => {
     switch (option) {
       case "Opção 1":
-        navigation.navigate("Finance"); // Navegar para a tela Settings
+        navigation.navigate("Finance");
         break;
       case "Opção 2":
-        navigation.navigate("Settings"); // Navegar para a tela Terms Policy
+        navigation.navigate("Settings");
         break;
       case "Opção 3":
-        navigation.navigate("TermsPolicy"); // Navegar para a tela Finance (ou a tela que você desejar)
+        navigation.navigate("Terms");
         break;
       default:
         break;
@@ -29,21 +29,18 @@ export default function ButtonNew({ focused, size }) {
   };
 
   const options = [
-    { icon: <DollarSign size={24} color="white" />, option: "Opção 1" }, // Para Settings
-    { icon: <Settings size={24} color="white" />, option: "Opção 2" }, // Para Terms Policy
-    { icon: <Handshake size={24} color="white" />, option: "Opção 3" }, // Para Finance
+    { icon: <DollarSign size={24} color="white" />, option: "Opção 1" },
+    { icon: <Settings size={24} color="white" />, option: "Opção 2" },
+    { icon: <Handshake size={24} color="white" />, option: "Opção 3" },
   ];
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[
-          styles.plusButton,
-          { backgroundColor: focused ? "#3B82F6" : "#3B82F6" },
-        ]}
+        style={[styles.plusButton, { backgroundColor: "#3B82F6" }]}
         onPress={handlePress}
       >
-        <Entypo name="plus" size={size} color={focused ? "black" : "white"} />
+        <Entypo name="plus" size={size} color="white" />
       </TouchableOpacity>
 
       {showOptions && (
@@ -51,7 +48,7 @@ export default function ButtonNew({ focused, size }) {
           {options.map(({ icon, option }, index) => (
             <TouchableOpacity
               key={option}
-              style={styles.optionButton}
+              style={[styles.optionButton, option === "Opção 2" && styles.settingsButton]} // Estilo alternativo para Settings
               onPress={() => navigateToOption(option)}
             >
               {icon}
@@ -68,9 +65,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   plusButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 62,
+    height: 62,
+    borderRadius: 33,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 15,
@@ -103,5 +100,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
     shadowColor: "#000",
+  },
+  settingsButton: {
+    top: -35,
   },
 });

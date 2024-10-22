@@ -5,7 +5,8 @@ import Card from '../components/Card';
 import Title from '../components/Title';
 import Line from '../components/Line';
 import HairLine from '../components/HairLine';
-import { UserRoundCogIcon, UserIcon, ChevronRight } from 'lucide-react-native';
+import { UserRoundCogIcon, UserIcon, ChevronRight, LockKeyhole, ScrollText, FileUser, MapPinHouseIcon, LogOut } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const backgroundImage = require('../images/Group.png');
 const bannerImage = require('../images/banner.jpg');
@@ -14,6 +15,7 @@ const profileImage = require('../images/profile.jpg');
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
   const userData = { enrollmentNumber: '123456789' };
+  const navigation = useNavigation();
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -56,17 +58,56 @@ export default function Config() {
                 <UserRoundCogIcon size={24} color="#D4D4D8" />
                 <Title>Seus Dados</Title>
               </View>
-              <Line />
               <Text style={styles.subText}>
                 Edite suas informações de perfil abaixo. Mantenha seus dados atualizados para garantir uma experiência personalizada.
               </Text>
-              <View style={styles.headerContainer}>
+              
+              <TouchableOpacity onPress={() => navigation.navigate('PersonalData')} style={styles.headerContainer}>
                 <UserIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Pessoais</Text>
                 <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
-              </View>
+              </TouchableOpacity>
               <HairLine />
+
+              <TouchableOpacity onPress={() => navigation.navigate('Password')} style={styles.headerContainer}>
+                <LockKeyhole size={24} color="#D4D4D8" />
+                <Text style={styles.titleWithIcon}>Senha</Text>
+                <View style={{ flex: 1 }} />
+                <ChevronRight size={24} color="#D4D4D8" />
+              </TouchableOpacity>
+              <HairLine />
+
+              <TouchableOpacity onPress={() => navigation.navigate('ContractData')} style={styles.headerContainer}>
+                <ScrollText size={24} color="#D4D4D8" />
+                <Text style={styles.titleWithIcon}>Dados Contratuais</Text>
+                <View style={{ flex: 1 }} />
+                <ChevronRight size={24} color="#D4D4D8" />
+              </TouchableOpacity>
+              <HairLine />
+
+              <TouchableOpacity onPress={() => navigation.navigate('Documents')} style={styles.headerContainer}>
+                <FileUser size={24} color="#D4D4D8" />
+                <Text style={styles.titleWithIcon}>Documentos</Text>
+                <View style={{ flex: 1 }} />
+                <ChevronRight size={24} color="#D4D4D8" />
+              </TouchableOpacity>
+              <HairLine />
+
+              <TouchableOpacity onPress={() => navigation.navigate('Address')} style={styles.headerContainer}>
+                <MapPinHouseIcon size={24} color="#D4D4D8" />
+                <Text style={styles.titleWithIcon}>Endereço</Text>
+                <View style={{ flex: 1 }} />
+                <ChevronRight size={24} color="#D4D4D8" />
+              </TouchableOpacity>
+              <HairLine />
+
+              <TouchableOpacity onPress={() => {/* Função para sair do aplicativo */}} style={styles.headerContainer}>
+                <LogOut size={24} color="#D4D4D8" />
+                <Text style={styles.titleWithIcon}>Sair do Aplicativo</Text>
+                <View style={{ flex: 1 }} />
+                <ChevronRight size={24} color="#D4D4D8" />
+              </TouchableOpacity>
             </View>
           </Card>
         </View>

@@ -1,9 +1,8 @@
-// pages/TermsPolicy.js
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-const TermsPolicy = ({ navigation }) => {
+export default function Terms({ navigation }) {
   const handleLogout = () => {
     Alert.alert(
       "Logout",
@@ -28,7 +27,7 @@ const TermsPolicy = ({ navigation }) => {
         <Text style={styles.optionText}>Perfil</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('TermsPolicy')}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Finance')}>
         <Feather name="dollar-sign" size={24} color="#000" />
         <Text style={styles.optionText}>Finanças</Text>
       </TouchableOpacity>
@@ -44,7 +43,7 @@ const TermsPolicy = ({ navigation }) => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -70,5 +69,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-export default TermsPolicy;
