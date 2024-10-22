@@ -8,7 +8,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "fire
 import ButtonLarge from "../components/ButtonLarge"; 
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 
-const backgroundImage = require('../images/Group.png');
+const backgroundImage = require('../images/mixed.jpg');
 const vectorImage = require('../images/Vector.png');
 
 export default function Login({ onLogin }) {
@@ -75,8 +75,8 @@ export default function Login({ onLogin }) {
               />
             </View>
             <ButtonLarge title="Login" onPress={handleLogin} />
-            <Text style={styles.text}>ou</Text>
-            <TouchableOpacity onPress={navigateToSignUp}>
+
+            <TouchableOpacity onPress={navigateToSignUp} style={styles.cad}>
               <Text style={styles.linkText}>
                 Não possui cadastro? 
                 <Text style={styles.linkTextHighlight}> Cadastre-se</Text>
@@ -87,27 +87,23 @@ export default function Login({ onLogin }) {
             <View style={styles.iconContainer}>
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
-                  <Icon name="facebook" size={30} color="#fff" />
+                  <Icon name="facebook" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
-                  <Icon name="google" size={30} color="#fff" />
+                  <Icon name="google" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
-                  <Icon name="twitter" size={30} color="#fff" />
+                  <Icon name="apple" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <Image 
-              source={vectorImage} 
-              style={styles.vectorImage} 
-              resizeMode="contain"
-            />
+
           </View>
         </ImageBackground>
       </KeyboardAvoidingView>
@@ -136,6 +132,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 12,
     backgroundColor: 'transparent',
+  },
+  cad: {
+    marginTop: 12,
   },
   input: {
     height: 60,
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#3B5998',
+    backgroundColor: '#1E3A8A',
     justifyContent: 'center',
     alignItems: 'center',
   },

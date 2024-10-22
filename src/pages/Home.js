@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, StyleSheet, ImageBackground, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Carteirinha from '../components/Carteirinha';
 import AdaptiveCard from '../components/AdaptativeCard';
@@ -20,11 +19,11 @@ export default function Home() {
       style={styles.background}
       resizeMode="cover" 
     >
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Carteirinha />
         
         <View style={styles.titleContainer}>
-          <Newspaper size={24} color="#FFFFFF" style={styles.titleIcon} />
+          <Newspaper size={24} color="#D4D4D8" style={styles.titleIcon} />
           <Title>Seu Feed</Title>
         </View>
 
@@ -44,7 +43,7 @@ export default function Home() {
           </AdaptiveCard>
 
           <View style={styles.titleContainer}>
-            <BellRing size={24} color="#FFFFFF" style={styles.titleIcon} />
+            <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />
             <Title>Ultimas notificações</Title>
           </View>
 
@@ -53,10 +52,61 @@ export default function Home() {
               <Text style={{ color: '#FFFFFF' }}>Nenhuma notificação</Text>
             </View>
           </AdaptiveCard>
-
-
         </View>
-      </View>
+        <View style={styles.cardsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Votação')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <DailyVote />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
+
+          <AdaptiveCard>
+            <View style={styles.innerCard}>
+              <FinanceCard />
+            </View>
+          </AdaptiveCard>
+
+          <View style={styles.titleContainer}>
+            <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />
+            <Title>Ultimas notificações</Title>
+          </View>
+
+          <AdaptiveCard>
+            <View style={styles.innerCard}>
+              <Text style={{ color: '#FFFFFF' }}>Nenhuma notificação</Text>
+            </View>
+          </AdaptiveCard>
+        </View>
+        <View style={styles.cardsContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Votação')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <DailyVote />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
+
+          <AdaptiveCard>
+            <View style={styles.innerCard}>
+              <FinanceCard />
+            </View>
+          </AdaptiveCard>
+
+          <View style={styles.titleContainer}>
+            <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />
+            <Title>Ultimas notificações</Title>
+          </View>
+
+          <AdaptiveCard>
+            <View style={styles.innerCard}>
+              <Text style={{ color: '#FFFFFF' }}>Nenhuma notificação</Text>
+            </View>
+          </AdaptiveCard>
+        </View>
+        
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -67,11 +117,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#171717',
   },
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 20,
-  },titleContainer: {
+    paddingBottom: 20,
+  },
+  titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,

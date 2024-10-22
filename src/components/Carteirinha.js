@@ -4,6 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import { BlurView } from 'expo-blur';
 
+// Importar a imagem mousePointer
+import mousePointer from '../images/mousePointer.png'; // Ajuste o caminho conforme necessário
+
 const userData = {
   title: 'Estudante',
   name: 'João Silva',
@@ -63,12 +66,14 @@ export default function Carteirinha() {
       >
         <BlurView intensity={700000} style={styles.modalContainer} overlayColor="green">
           <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
+            <Text style={styles.modalTitle}>Código para embarque</Text>
             <QRCode
               value={userData.enrollmentNumber}
               size={200}
               color='#000000'
               backgroundColor='transparent'
             />
+            <Image source={mousePointer} style={styles.mousePointer} />
           </TouchableOpacity>
         </BlurView>
       </Modal>
@@ -148,5 +153,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
+  },
+  modalTitle: {
+    fontSize: 40,
+    fontWeight: 'extra-bold',
+    color: '#3B82F6',
+    marginBottom: 50,
+  },
+  mousePointer: {
+    width: 50, // Ajuste o tamanho conforme necessário
+    height: 50, // Ajuste o tamanho conforme necessário
+    marginTop: 20, // Adicione um espaço entre o QRCode e a imagem
+    left: 100, // Ajuste a posição conforme necessário
+    transform: [{ rotate: '-6deg' }], // Aplica uma rotação de 15 graus
   },
 });
