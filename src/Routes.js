@@ -13,6 +13,7 @@ import Finance from './pages/Finance';
 import Terms from './pages/Terms';
 import ButtonNew from './components/ButtonNew';
 import Login from './pages/Login';
+import SignUpScreen from './pages/SignUpScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -150,13 +151,10 @@ export default function Routes() {
                 headerTitle: () => (
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
-                      Perfil
+                      Finanças
                     </Text>
                     <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
                   </View>
-                ),
-                tabBarIcon: ({ size, color }) => (
-                  <Feather name="user" size={size} color={color} />
                 ),
               }} 
             />
