@@ -4,15 +4,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Home from './pages/Home';
-import Voting from './pages/Voting';
-import Location from './pages/Location';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-import Finance from './pages/Finance';
-import Terms from './pages/Terms';
-import ButtonNew from './components/ButtonNew';
-import Login from './pages/Login';
+import Home from '../pages/Home';
+import Voting from '../pages/Voting';
+import Location from '../pages/Location';
+import Profile from '../pages/Profile';
+import Settings from '../pages/Settings';
+import Finance from '../pages/Finance';
+import Terms from '../pages/Terms';
+import ButtonNew from '../components/ButtonNew';
+import Login from '../pages/auth/Login';
+import SignUp from '../pages/auth/SignUpScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -128,9 +129,12 @@ export default function Routes() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isLoggedIn ? (
-          <Stack.Screen name="Login">
-            {() => <Login onLogin={handleLoginSuccess} />} 
-          </Stack.Screen>
+          <>
+            <Stack.Screen name="Login">
+              {() => <Login onLogin={handleLoginSuccess} />}
+            </Stack.Screen>
+            <Stack.Screen name="SignUpScreen" component={SignUp} />
+          </>
         ) : (
           <>
             <Stack.Screen name="Home" component={TabNavigator} />
@@ -154,9 +158,6 @@ export default function Routes() {
                     </Text>
                     <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
                   </View>
-                ),
-                tabBarIcon: ({ size, color }) => (
-                  <Feather name="user" size={size} color={color} />
                 ),
               }} 
             />

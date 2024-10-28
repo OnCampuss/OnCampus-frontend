@@ -1,38 +1,53 @@
-// pages/Login.js
 import React, { useState } from "react";
 import { View, TextInput, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Mail, LockKeyhole } from 'lucide-react-native';
-import { auth } from "../services/firebase";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import ButtonLarge from "../components/ButtonLarge"; 
+import { supabase } from "../../services/supabase";
+import ButtonLarge from "../../components/ButtonLarge"; 
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 
-const backgroundImage = require('../images/Group.png');
-const vectorImage = require('../images/Vector.png');
+const backgroundImage = require('../../images/mixed.jpg');
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        onLogin();
-      })
-      .catch((error) => {
-        Alert.alert("Erro", error.message);
+  const handleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
       });
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          Alert.alert("Erro", "Senha ou email incorretos. Tente novamente.");
+        } else {
+          Alert.alert("Erro", error.message);
+        }
+        return;
+      }
+      onLogin();
+    } catch (error) {
+      Alert.alert("Erro", error.message);
+    }
   };
 
-  const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-      })
-      .catch((error) => {
-        Alert.alert("Erro", error.message);
+  const handleSignUp = async () => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
       });
+      if (error) throw error;
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso! Você pode fazer login agora.");
+    } catch (error) {
+      if (error.message.includes("Email already exists")) {
+        Alert.alert("Erro", "Você já possui uma conta com este email.");
+      } else {
+        Alert.alert("Erro", error.message);
+      }
+    }
   };
 
   const navigateToSignUp = () => {
@@ -75,7 +90,6 @@ export default function Login({ onLogin }) {
               />
             </View>
             <ButtonLarge title="Login" onPress={handleLogin} />
-            <Text style={styles.text}>ou</Text>
             <TouchableOpacity onPress={navigateToSignUp}>
               <Text style={styles.linkText}>
                 Não possui cadastro? 
@@ -103,11 +117,6 @@ export default function Login({ onLogin }) {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <Image 
-              source={vectorImage} 
-              style={styles.vectorImage} 
-              resizeMode="contain"
-            />
           </View>
         </ImageBackground>
       </KeyboardAvoidingView>

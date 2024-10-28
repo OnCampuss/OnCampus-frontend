@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, Modal, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
+import mousePointer from '../../assets/images/mousePointer.png';
+
 import { BlurView } from 'expo-blur';
+
+
 
 const userData = {
   title: 'Estudante',
@@ -63,12 +67,14 @@ export default function Carteirinha() {
       >
         <BlurView intensity={700000} style={styles.modalContainer} overlayColor="green">
           <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
+            <Text style={styles.modalTitle}>Código para embarque</Text>
             <QRCode
               value={userData.enrollmentNumber}
               size={200}
               color='#000000'
               backgroundColor='transparent'
             />
+            <Image source={mousePointer} style={styles.mousePointer} />
           </TouchableOpacity>
         </BlurView>
       </Modal>
@@ -148,5 +154,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
+  },
+  modalTitle: {
+    fontSize: 40,
+    fontWeight: 'extra-bold',
+    color: '#3B82F6',
+    marginBottom: 50,
+  },
+  mousePointer: {
+    width: 50, 
+    height: 50,
+    marginTop: 20, 
+    left: 100,
+    transform: [{ rotate: '-6deg' }], 
   },
 });
