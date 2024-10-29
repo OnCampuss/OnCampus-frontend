@@ -8,16 +8,11 @@ import Login from '../pages/auth/Login';
 import Home from '../pages/home/Home';
 import Profile from '../pages/home/Profile';
 import Settings from '../pages/home/Settings';
-
-
 import Voting from '../pages/home/Voting';
 import Location from '../pages/location/Location';
-
-
 import Finance from '../pages/finance/Finance';
 import Terms from '../pages/commonPages/Terms';
 import ButtonNew from '../components/ButtonNew';
-
 import SignUpScreen from '../pages/auth/SignUpScreen';
 
 const Tab = createBottomTabNavigator();
@@ -134,9 +129,12 @@ export default function Routes() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isLoggedIn ? (
-          <Stack.Screen name="Login">
-            {() => <Login onLogin={handleLoginSuccess} />} 
-          </Stack.Screen>
+          <>
+            <Stack.Screen name="Login">
+              {() => <Login onLogin={handleLoginSuccess} />} 
+            </Stack.Screen>
+            <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+          </>
         ) : (
           <>
             <Stack.Screen name="Home" component={TabNavigator} />

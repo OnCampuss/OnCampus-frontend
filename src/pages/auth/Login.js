@@ -1,5 +1,4 @@
-// pages/Login.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -26,6 +25,19 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
+  // Verificar sessão ativa e redirecionar automaticamente
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session && data.session.user.email_confirmed_at) {
+        onLogin(); // Chama a função de login no componente pai
+        navigation.navigate("Home");
+      }
+    };
+    checkSession();
+  }, []);
+
+  // Função de login
   const handleLogin = async () => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -35,9 +47,18 @@ export default function Login({ onLogin }) {
     if (error) {
       Alert.alert("Erro", error.message);
     } else {
-      // Chame a função onLogin para alterar o estado de isLoggedIn
-      onLogin(); // Passa o estado para o componente pai
-      navigation.navigate("Home"); // Certifique-se que a rota Home está registrada
+      if (data.user && data.user.email_confirmed_at) {
+        onLogin(); // Chama a função de login no componente pai
+        navigation.navigate("Home");
+      } else {
+        Alert.alert(
+          "Confirmação de E-mail",
+          "Por favor, verifique seu e-mail para confirmar sua conta."
+        );
+        await supabase.auth.signOut(); // Deslogar até confirmação de e-mail
+        // Redireciona para a tela de login após deslogar
+        navigation.navigate("Login");
+      }
     }
   };
 
@@ -82,38 +103,38 @@ export default function Login({ onLogin }) {
             </View>
             <ButtonLarge title="Login" onPress={handleLogin} />
 
-<TouchableOpacity onPress={navigateToSignUp} style={styles.cad}>
-  <Text style={styles.linkText}>
-    Não possui cadastro?
-    <Text style={styles.linkTextHighlight}> Cadastre-se</Text>
-  </Text>
-</TouchableOpacity>
+            <TouchableOpacity onPress={navigateToSignUp} style={styles.cad}>
+              <Text style={styles.linkText}>
+                Não possui cadastro?
+                <Text style={styles.linkTextHighlight}> Cadastre-se</Text>
+              </Text>
+            </TouchableOpacity>
 
-<Text style={styles.socialLoginText}>Faça Login com</Text>
-<View style={styles.iconContainer}>
-  <TouchableOpacity style={styles.icon}>
-    <View style={styles.ovalIcon}>
-      <Icon name="facebook" size={30} color="#D4D4D8" />
-    </View>
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.icon}>
-    <View style={styles.ovalIcon}>
-      <Icon name="google" size={30} color="#D4D4D8" />
-    </View>
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.icon}>
-    <View style={styles.ovalIcon}>
-      <Icon name="apple" size={30} color="#D4D4D8" />
-    </View>
-  </TouchableOpacity>
-</View>
-
+            <Text style={styles.socialLoginText}>Faça Login com</Text>
+            <View style={styles.iconContainer}>
+              <TouchableOpacity style={styles.icon}>
+                <View style={styles.ovalIcon}>
+                  <Icon name="facebook" size={30} color="#D4D4D8" />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <View style={styles.ovalIcon}>
+                  <Icon name="google" size={30} color="#D4D4D8" />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <View style={styles.ovalIcon}>
+                  <Icon name="apple" size={30} color="#D4D4D8" />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </ImageBackground>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,

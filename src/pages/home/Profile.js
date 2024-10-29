@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ImageBackground, Image, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, ImageBackground, Image, Text, Modal, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Card from '../../components/Card';
 import Title from '../../components/Title';
-import Line from '../../components/Line';
 import HairLine from '../../components/HairLine';
 import { UserRoundCogIcon, UserIcon, ChevronRight, LockKeyhole, ScrollText, FileUser, MapPinHouseIcon, LogOut } from 'lucide-react-native';
+import { supabase } from '../../services/supabase';
 import { useNavigation } from '@react-navigation/native';
 
 const backgroundImage = require('../../images/Group.png');
@@ -14,10 +14,26 @@ const profileImage = require('../../images/profile.jpg');
 
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation(); // Chame useNavigation aqui
   const userData = { enrollmentNumber: '123456789' };
-  const navigation = useNavigation();
+  
   const toggleModal = () => {
     setModalVisible(!modalVisible);
+  };
+
+  // Função de logout
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+      Alert.alert('Sucesso', 'Logout realizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao realizar o logout.');
+    }
   };
 
   return (
@@ -61,8 +77,8 @@ export default function Config() {
               <Text style={styles.subText}>
                 Edite suas informações de perfil abaixo. Mantenha seus dados atualizados para garantir uma experiência personalizada.
               </Text>
-              
-              <TouchableOpacity onPress={() => navigation.navigate('PersonalData')} style={styles.headerContainer}>
+
+              <TouchableOpacity style={styles.headerContainer}>
                 <UserIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Pessoais</Text>
                 <View style={{ flex: 1 }} />
@@ -70,7 +86,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity onPress={() => navigation.navigate('Password')} style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer}>
                 <LockKeyhole size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Senha</Text>
                 <View style={{ flex: 1 }} />
@@ -78,7 +94,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity onPress={() => navigation.navigate('ContractData')} style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer}>
                 <ScrollText size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Contratuais</Text>
                 <View style={{ flex: 1 }} />
@@ -86,7 +102,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity onPress={() => navigation.navigate('Documents')} style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer}>
                 <FileUser size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Documentos</Text>
                 <View style={{ flex: 1 }} />
@@ -94,7 +110,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity onPress={() => navigation.navigate('Address')} style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer}>
                 <MapPinHouseIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Endereço</Text>
                 <View style={{ flex: 1 }} />
@@ -102,7 +118,8 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity onPress={() => {/* Função para sair do aplicativo */}} style={styles.headerContainer}>
+              {/* Botão de logout */}
+              <TouchableOpacity onPress={handleLogout} style={styles.headerContainer}>
                 <LogOut size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Sair do Aplicativo</Text>
                 <View style={{ flex: 1 }} />
@@ -223,7 +240,6 @@ const styles = StyleSheet.create({
   modalOverlay: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
   },
 });
+
