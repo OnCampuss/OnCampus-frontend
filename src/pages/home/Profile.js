@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ImageBackground, Image, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import Card from '../components/Card';
-import Title from '../components/Title';
-import Line from '../components/Line';
-import HairLine from '../components/HairLine';
+import Card from '../../components/Card';
+import Title from '../../components/Title';
+import Line from '../../components/Line';
+import HairLine from '../../components/HairLine';
 import { UserRoundCogIcon, UserIcon, ChevronRight, LockKeyhole, ScrollText, FileUser, MapPinHouseIcon, LogOut } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const backgroundImage = require('../images/Group.png');
-const bannerImage = require('../images/banner.jpg');
-const profileImage = require('../images/profile.jpg');
+const backgroundImage = require('../../../assets/images/Group.png');
+const bannerImage = require('../../images/banner.jpg');
+const profileImage = require('../../images/profile.jpg');
 
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);

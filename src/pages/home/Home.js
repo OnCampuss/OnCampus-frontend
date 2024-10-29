@@ -2,14 +2,14 @@ import React from 'react';
 import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import Carteirinha from '../components/Carteirinha';
-import AdaptiveCard from '../components/AdaptativeCard';
+import Carteirinha from '../../components/Carteirinha';
+import AdaptiveCard from '../../components/AdaptativeCard';
 import { Newspaper, BellRing } from 'lucide-react-native';
-import DailyVote from '../components/DailyVote';
-import FinanceCard from '../components/FinanceCard'; 
-import Title from '../components/Title';
+import DailyVote from '../../components/DailyVote';
+import FinanceCard from '../../components/FinanceCard'; 
+import Title from '../../components/Title';
 
-const backgroundImage = require('../images/Group.png');
+const backgroundImage = require('../../../assets/images/Group.png');
 
 export default function Home() {
   const navigation = useNavigation();

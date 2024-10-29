@@ -4,12 +4,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Home from '../pages/Home';
-import Voting from '../pages/Voting';
-import Location from '../pages/Location';
-import Profile from '../pages/Profile';
-import Settings from '../pages/Settings';
-import Finance from '../pages/Finance';
+import Home from '../../src/pages/home/Home';
+import Profile from '../../src/pages/home/Profile';
+import Settings from '../../src/pages/home/Settings';
+import Voting from '../../src/pages/home/Voting';
+
+import Location from '../pages/location/Location';
+
+
+
+import Finance from '../pages/finance/Finance';
 import Terms from '../pages/Terms';
 import ButtonNew from '../components/ButtonNew';
 import Login from '../pages/auth/Login';

@@ -5,11 +5,11 @@ import { BusFront, MapPinCheck, MapPinPlus } from 'lucide-react-native';
 import { Entypo } from '@expo/vector-icons';
 import * as LocationAPI from 'expo-location'; 
 import MapView, { Marker } from 'react-native-maps';
-import Line from '../components/Line';
-import Title from '../components/Title'; 
+import Line from '../../components/Line';
+import Title from '../../components/Title'; 
 
-const busImage = require('../images/bus.webp');
-const backgroundImage = require('../images/Group.png');
+const busImage = require('../../images/bus.webp');
+const backgroundImage = require('../../../assets/images/Group.png');
 
 const TravelInfoCard = () => {
   return (
