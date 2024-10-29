@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
-import Card from '../components/Card';
-import Line from '../components/Line';
+import Card from '../../components/Card';
+import Line from '../../components/Line';
 import { Feather } from '@expo/vector-icons';
 
-const backgroundImage = require('../images/Group.png');
+const backgroundImage = require('../../images/Group.png');
 
 export default function Finance() {
   return (

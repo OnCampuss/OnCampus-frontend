@@ -15,11 +15,11 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Mail, LockKeyhole } from "lucide-react-native";
-import { supabase } from "../services/supabase"; // ajuste o caminho conforme necessário
-import ButtonLarge from "../components/ButtonLarge";
+import { supabase } from "../../services/supabase";
+import ButtonLarge from "../../components/ButtonLarge";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const backgroundImage = require("../images/mixed.jpg");
+const backgroundImage = require("../../images/mixed.jpg");
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");

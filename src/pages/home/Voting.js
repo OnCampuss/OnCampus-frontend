@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Alert } from 'react-native';
-import Line from '../components/Line';
-import Card from '../components/Card';
+import Line from '../../components/Line';
+import Card from '../../components/Card';
 import { SquareCheck, Timer } from 'lucide-react-native';
 
-const backgroundImage = require('../images/Group.png');
+const backgroundImage = require('../../images/Group.png');
 
 export default function Voting() {
   const [vote, setVote] = useState('');
