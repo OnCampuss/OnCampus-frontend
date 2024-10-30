@@ -5,7 +5,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { BlurView } from 'expo-blur';
 
 // Importar a imagem mousePointer
-import mousePointer from '../images/mousePointer.png'; // Ajuste o caminho conforme necessário
+import mousePointer from '../images/mousePointer.png'; 
 
 const userData = {
   title: 'Estudante',
@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   mousePointer: {
-    width: 50, // Ajuste o tamanho conforme necessário
-    height: 50, // Ajuste o tamanho conforme necessário
-    marginTop: 20, // Adicione um espaço entre o QRCode e a imagem
-    left: 100, // Ajuste a posição conforme necessário
-    transform: [{ rotate: '-6deg' }], // Aplica uma rotação de 15 graus
+    width: 50, 
+    height: 50, 
+    marginTop: 20, 
+    left: 100, 
+    transform: [{ rotate: '-6deg' }], 
   },
 });

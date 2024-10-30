@@ -138,6 +138,7 @@ export default function Routes() {
         ) : (
           <>
             <Stack.Screen name="Home" component={TabNavigator} />
+
             <Stack.Screen 
               name="Finance" 
               component={Finance} 
@@ -150,17 +151,20 @@ export default function Routes() {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 22,
+                  textAlign: 'center',
+                  flex: 1,
                 },
                 headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
                       Finanças
                     </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
+                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
                   </View>
                 ),
               }} 
             />
+
             <Stack.Screen 
               name="Settings" 
               component={Settings} 
@@ -173,17 +177,20 @@ export default function Routes() {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 22,
+                  textAlign: 'center',
+                  flex: 1,
                 },
                 headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
                       Configurações
                     </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
+                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
                   </View>
                 ),
               }} 
             />
+
             <Stack.Screen 
               name="Terms" 
               component={Terms} 
@@ -196,13 +203,15 @@ export default function Routes() {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 22,
+                  textAlign: 'center',
+                  flex: 1,
                 },
                 headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
                       Termos e Política
                     </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
+                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
                   </View>
                 ),
               }} 

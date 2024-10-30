@@ -13,8 +13,8 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Mail, LockKeyhole, Eye, EyeOff } from "lucide-react-native"; // Importe os ícones
-import { supabase } from "../../services/supabase"; // ajuste o caminho conforme necessário
+import { Mail, LockKeyhole, Eye, EyeOff } from "lucide-react-native";
+import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
 
 const backgroundImage = require("../../images/mixed.jpg");
@@ -22,15 +22,15 @@ const backgroundImage = require("../../images/mixed.jpg");
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // Estado para confirmação de senha
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar senha
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para mostrar/ocultar confirmação de senha
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigation = useNavigation();
 
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
       Alert.alert("Erro", "As senhas não coincidem.");
-      return; // Sai da função se as senhas não coincidirem
+      return;
     }
 
     const { error } = await supabase.auth.signUp({
@@ -46,10 +46,9 @@ export default function SignUpScreen() {
         "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail."
       );
 
-      // Redireciona para a tela de login após 2 segundos
       setTimeout(() => {
         navigation.navigate("Login");
-      }, 2000); // Altere o tempo conforme necessário
+      }, 2000);
     }
   };
 
@@ -93,7 +92,7 @@ export default function SignUpScreen() {
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
-                style={styles.eyeIconContainer} // Adicionando estilo aqui
+                style={styles.eyeIconContainer}
               >
                 {showPassword ? (
                   <EyeOff size={20} color="#887E7E" />
@@ -114,7 +113,7 @@ export default function SignUpScreen() {
               />
               <TouchableOpacity
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                style={styles.eyeIconContainer} // Adicionando estilo aqui
+                style={styles.eyeIconContainer}
               >
                 {showConfirmPassword ? (
                   <EyeOff size={20} color="#887E7E" />
@@ -172,9 +171,9 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: 10,
   },
-  eyeIconContainer: { // Novo estilo para o ícone de olho
-    marginLeft: 10, // Espaço à esquerda do ícone
-    marginRight: 10, // Espaço à direita do ícone
+  eyeIconContainer: {
+    marginLeft: 10,
+    marginRight: 10,
   },
   linkText: {
     color: "#ffffff",

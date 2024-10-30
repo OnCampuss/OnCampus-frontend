@@ -3,6 +3,8 @@ import { View, StyleSheet, Dimensions } from "react-native";
 
 export default function Card({ children, height = 500, width }) {
   const { width: screenWidth } = Dimensions.get('window');
+  
+
   const cardWidth = width || (screenWidth > 380 ? 380 : screenWidth * 0.9);
 
   return (
@@ -19,5 +21,7 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
     borderWidth: 1,
     marginBottom: 10,
+    maxWidth: 380, 
+    alignSelf: 'center', 
   },
 });

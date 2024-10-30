@@ -36,11 +36,13 @@ export default function Home() {
             </AdaptiveCard>
           </TouchableOpacity>
 
-          <AdaptiveCard>
-            <View style={styles.innerCard}>
-              <FinanceCard />
-            </View>
-          </AdaptiveCard>
+          <TouchableOpacity onPress={() => navigation.navigate('Finance')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <FinanceCard />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
 
           <View style={styles.titleContainer}>
             <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />
@@ -53,6 +55,7 @@ export default function Home() {
             </View>
           </AdaptiveCard>
         </View>
+        
         <View style={styles.cardsContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Votação')}> 
             <AdaptiveCard>
@@ -62,11 +65,13 @@ export default function Home() {
             </AdaptiveCard>
           </TouchableOpacity>
 
-          <AdaptiveCard>
-            <View style={styles.innerCard}>
-              <FinanceCard />
-            </View>
-          </AdaptiveCard>
+          <TouchableOpacity onPress={() => navigation.navigate('Finance')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <FinanceCard />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
 
           <View style={styles.titleContainer}>
             <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />
@@ -79,6 +84,7 @@ export default function Home() {
             </View>
           </AdaptiveCard>
         </View>
+
         <View style={styles.cardsContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Votação')}> 
             <AdaptiveCard>
@@ -88,11 +94,13 @@ export default function Home() {
             </AdaptiveCard>
           </TouchableOpacity>
 
-          <AdaptiveCard>
-            <View style={styles.innerCard}>
-              <FinanceCard />
-            </View>
-          </AdaptiveCard>
+          <TouchableOpacity onPress={() => navigation.navigate('Finance')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <FinanceCard />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
 
           <View style={styles.titleContainer}>
             <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />

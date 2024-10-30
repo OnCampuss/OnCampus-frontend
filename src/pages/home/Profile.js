@@ -14,14 +14,14 @@ const profileImage = require('../../images/profile.jpg');
 
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation(); // Chame useNavigation aqui
+  const navigation = useNavigation(); 
   const userData = { enrollmentNumber: '123456789' };
   
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
-  // Função de logout
+  // Função de logout, 'erro na saida'
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -118,7 +118,6 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              {/* Botão de logout */}
               <TouchableOpacity onPress={handleLogout} style={styles.headerContainer}>
                 <LogOut size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Sair do Aplicativo</Text>

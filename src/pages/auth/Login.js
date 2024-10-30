@@ -25,19 +25,17 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-  // Verificar sessão ativa e redirecionar automaticamente
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session && data.session.user.email_confirmed_at) {
-        onLogin(); // Chama a função de login no componente pai
+        onLogin();
         navigation.navigate("Home");
       }
     };
     checkSession();
   }, []);
 
-  // Função de login
   const handleLogin = async () => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -48,17 +46,26 @@ export default function Login({ onLogin }) {
       Alert.alert("Erro", error.message);
     } else {
       if (data.user && data.user.email_confirmed_at) {
-        onLogin(); // Chama a função de login no componente pai
+        onLogin();
         navigation.navigate("Home");
       } else {
         Alert.alert(
           "Confirmação de E-mail",
           "Por favor, verifique seu e-mail para confirmar sua conta."
         );
-        await supabase.auth.signOut(); // Deslogar até confirmação de e-mail
-        // Redireciona para a tela de login após deslogar
+        await supabase.auth.signOut();
         navigation.navigate("Login");
       }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) {
+      Alert.alert("Erro", "Não foi possível realizar o login com o Google.");
     }
   };
 
@@ -117,7 +124,7 @@ export default function Login({ onLogin }) {
                   <Icon name="facebook" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.icon}>
+              <TouchableOpacity onPress={handleGoogleLogin} style={styles.icon}>
                 <View style={styles.ovalIcon}>
                   <Icon name="google" size={30} color="#D4D4D8" />
                 </View>

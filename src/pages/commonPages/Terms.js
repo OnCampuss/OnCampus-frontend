@@ -1,71 +1,107 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
+import Title from '../../components/Title';
+import HairLine from '../../components/HairLine';
 
-export default function Terms({ navigation }) {
-  const handleLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Você tem certeza que deseja sair?",
-      [
-        {
-          text: "Cancelar",
-          onPress: () => {},
-          style: "cancel"
-        },
-        { text: "Sair", onPress: () => navigation.navigate('Login') }
-      ]
-    );
-  };
+const backgroundImage = require('../../images/Group.png');
 
+export default function TermsAndPolicies() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Configurações</Text>
-
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Profile')}>
-        <Feather name="user" size={24} color="#000" />
-        <Text style={styles.optionText}>Perfil</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Finance')}>
-        <Feather name="dollar-sign" size={24} color="#000" />
-        <Text style={styles.optionText}>Finanças</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Terms Policy')}>
-        <Feather name="file-text" size={24} color="#000" />
-        <Text style={styles.optionText}>Termos e Políticas</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.option} onPress={handleLogout}>
-        <Feather name="log-out" size={24} color="#000" />
-        <Text style={styles.optionText}>Sair</Text>
-      </TouchableOpacity>
-    </View>
+    <ImageBackground 
+      source={backgroundImage}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.card}>
+            <View style={styles.cardContent}>
+              <Title >Termos e Políticas</Title>
+              <Text style={styles.subText}>
+                Leia atentamente nossos termos e políticas. Ao utilizar nosso serviço, você concorda com os termos descritos abaixo:
+              </Text>
+              <HairLine style={styles.hairline} />
+              <Text style={styles.policyText}>
+                1. Aceitação dos Termos: Ao acessar ou usar nossos serviços, você concorda em cumprir e estar vinculado a estes termos.
+              </Text>
+              <HairLine style={styles.hairline} />
+              <Text style={styles.policyText}>
+                2. Uso Aceitável: Você concorda em não usar nossos serviços para atividades ilegais ou proibidas.
+              </Text>
+              <HairLine style={styles.hairline} />
+              <Text style={styles.policyText}>
+                3. Alterações: Reservamo-nos o direito de alterar estes termos a qualquer momento.
+              </Text>
+              <HairLine style={styles.hairline} />
+              <Text style={styles.policyText}>
+                4. Contato: Se você tiver dúvidas sobre estes termos, entre em contato conosco.
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.acceptButton}>
+              <Text style={styles.buttonText}>Aceitar</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    backgroundColor: '#171717',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  card: {
+    backgroundColor: '#2B2B2B',
+    borderRadius: 10,
+    padding: 20,
+    width: '100%',
+  },
+  cardContent: {
+    alignItems: 'center',
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 15,
   },
-  option: {
-    flexDirection: 'row',
+  subText: {
+    color: '#D4D4D8',
+    textAlign: 'center',
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  policyText: {
+    color: '#D4D4D8',
+    fontSize: 14,
+    marginVertical: 10,
+    textAlign: 'left',
+    lineHeight: 20,
+  },
+  hairline: {
+    height: 1,
+    backgroundColor: '#D4D4D8',
+    marginVertical: 10,
+    width: '100%',
+  },
+  acceptButton: {
+    backgroundColor: '#3B82F6',
+    borderRadius: 10,
+    padding: 10,
     alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    marginTop: 20,
   },
-  optionText: {
-    marginLeft: 15,
+  buttonText: {
+    color: '#FFFFFF',
     fontSize: 18,
+    fontWeight: 'bold',
   },
 });
