@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Mail, LockKeyhole, Eye, EyeOff } from "lucide-react-native";
@@ -18,6 +19,7 @@ import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
 
 const backgroundImage = require("../../images/mixed.jpg");
+const logoImage = require("../../../assets/yoda.webp");
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
@@ -68,6 +70,9 @@ export default function SignUpScreen() {
           resizeMode="cover"
         >
           <View style={styles.container}>
+          <Image source={logoImage} style={styles.logo} />
+          <Text style={styles.mensage}>Crie sua conta para começarmos!</Text>
+           
             <View style={styles.inputContainer}>
               <Mail size={20} color="#887E7E" style={styles.icon} />
               <TextInput
@@ -144,6 +149,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "#171717",
+  }, logo: {
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  mensage: {
+    color: "#d4d4d2",
+    textAlign: "center",
+    marginBottom: 20,
+    fontSize: 16,
   },
   container: {
     flex: 1,

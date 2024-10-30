@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import {
   View,
   TextInput,
@@ -11,14 +11,17 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Mail, LockKeyhole } from "lucide-react-native";
 import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
 import Icon from "react-native-vector-icons/FontAwesome";
+import GoogleLoginButton from './GoogleLoginButton';
 
 const backgroundImage = require("../../images/mixed.jpg");
+const logoImage = require("../../../assets/yoda.webp");
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -59,18 +62,12 @@ export default function Login({ onLogin }) {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-
-    if (error) {
-      Alert.alert("Erro", "Não foi possível realizar o login com o Google.");
-    }
-  };
-
   const navigateToSignUp = () => {
     navigation.navigate("SignUpScreen");
+  };
+
+  const navigateToForgotPassword = () => {
+    navigation.navigate("ForgotPasswordScreen");
   };
 
   return (
@@ -85,6 +82,8 @@ export default function Login({ onLogin }) {
           resizeMode="cover"
         >
           <View style={styles.container}>
+            <Image source={logoImage} style={styles.logo} />
+            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitario!</Text> 
             <View style={styles.inputContainer}>
               <Mail size={20} color="#887E7E" style={styles.icon} />
               <TextInput
@@ -109,32 +108,32 @@ export default function Login({ onLogin }) {
               />
             </View>
             <ButtonLarge title="Login" onPress={handleLogin} />
-
             <TouchableOpacity onPress={navigateToSignUp} style={styles.cad}>
               <Text style={styles.linkText}>
                 Não possui cadastro?
                 <Text style={styles.linkTextHighlight}> Cadastre-se</Text>
               </Text>
             </TouchableOpacity>
-
-            <Text style={styles.socialLoginText}>Faça Login com</Text>
+            <Text style={styles.socialLoginText}>ou</Text>
             <View style={styles.iconContainer}>
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
                   <Icon name="facebook" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleGoogleLogin} style={styles.icon}>
-                <View style={styles.ovalIcon}>
-                  <Icon name="google" size={30} color="#D4D4D8" />
-                </View>
-              </TouchableOpacity>
+              <GoogleLoginButton style={styles.icon} />
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
                   <Icon name="apple" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPassword}>
+              <Text style={styles.linkText}>
+                Esqueceu a senha?
+                <Text style={styles.linkTextHighlight}> Clique aqui</Text>
+              </Text>
+            </TouchableOpacity>
           </View>
         </ImageBackground>
       </KeyboardAvoidingView>
@@ -149,6 +148,22 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "#171717",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  welcomeMessage: {
+    color: "#d4d4d2",
+    textAlign: "center",
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  forgotPassword: {
+    marginTop: 12,
+    textAlign: "center",
   },
   container: {
     flex: 1,
@@ -192,8 +207,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
-    marginVertical: 12,
   },
   ovalIcon: {
     width: 50,

@@ -14,6 +14,7 @@ import Finance from '../pages/finance/Finance';
 import Terms from '../pages/commonPages/Terms';
 import ButtonNew from '../components/ButtonNew';
 import SignUpScreen from '../pages/auth/SignUpScreen';
+import ForgotPassword from '../pages/auth/ForgotPasswordScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -133,12 +134,12 @@ export default function Routes() {
             <Stack.Screen name="Login">
               {() => <Login onLogin={handleLoginSuccess} />} 
             </Stack.Screen>
+            <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
           </>
         ) : (
           <>
             <Stack.Screen name="Home" component={TabNavigator} />
-
             <Stack.Screen 
               name="Finance" 
               component={Finance} 
@@ -164,7 +165,6 @@ export default function Routes() {
                 ),
               }} 
             />
-
             <Stack.Screen 
               name="Settings" 
               component={Settings} 
@@ -190,7 +190,6 @@ export default function Routes() {
                 ),
               }} 
             />
-
             <Stack.Screen 
               name="Terms" 
               component={Terms} 
