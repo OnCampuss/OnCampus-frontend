@@ -14,7 +14,9 @@ import Finance from '../pages/finance/Finance';
 import Terms from '../pages/commonPages/Terms';
 import ButtonNew from '../components/ButtonNew';
 import SignUpScreen from '../pages/auth/SignUpScreen';
-import ForgotPassword from '../pages/auth/ForgotPasswordScreen';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import PaymentMethod from '../pages/finance/PaymentMethod';
+import PixPayment from '../pages/finance/PixPayment';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -158,13 +160,64 @@ export default function Routes() {
                 headerTitle: () => (
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                     <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
-                      Finanças
+                      Financeiro
                     </Text>
                     <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
                   </View>
                 ),
               }} 
             />
+            <Stack.Screen 
+              name="PaymentMethod" 
+              component={PaymentMethod} 
+              options={{
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: '#171717',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 22,
+                  textAlign: 'center',
+                  flex: 1,
+                },
+                headerTitle: () => (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
+                      Método de Pagamento
+                    </Text>
+                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
+                  </View>
+                ),
+              }} 
+            />
+                        <Stack.Screen 
+              name="PixPayment"
+              component={PixPayment} 
+              options={{
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: '#171717',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 22,
+                  textAlign: 'center',
+                  flex: 1,
+                },
+                headerTitle: () => (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
+                      Pix
+                    </Text>
+                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
+                  </View>
+                ),
+              }} 
+            />
+
             <Stack.Screen 
               name="Settings" 
               component={Settings} 

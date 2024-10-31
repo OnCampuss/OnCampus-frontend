@@ -21,7 +21,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import GoogleLoginButton from './GoogleLoginButton';
 
 const backgroundImage = require("../../images/mixed.jpg");
-const logoImage = require("../../../assets/yoda.webp");
+const logoImage = require("../../../assets/logo.png");
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     alignSelf: "center",
-    marginBottom: 10,
+    bottom: 45,
   },
   welcomeMessage: {
     color: "#d4d4d2",

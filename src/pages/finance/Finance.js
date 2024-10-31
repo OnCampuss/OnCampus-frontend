@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, TouchableOpacity} from 'react-native';
 import Card from '../../components/Card';
 import Title from '../../components/Title';
 import HairLine from '../../components/HairLine';
 import { Scroll, ChevronRight, CircleDollarSign } from 'lucide-react-native';
+import Line from '../../components/Line';
+import ButtonSmall from '../../components/ButtonSmall';
 
 const backgroundImage = require('../../images/Group.png');
 
@@ -15,7 +17,7 @@ const fetchInvoices = async () => {
   ];
 };
 
-export default function Finance() {
+export default function Finance({ navigation }) {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,17 +43,19 @@ export default function Finance() {
     >
       <View style={styles.container}>
         <View style={styles.cardContainer}>
-          <Card height={165} style={styles.card}>
+          <Card height={170} style={styles.card}>
             <View style={styles.cardContent}>
               <View style={styles.titleWithIcon}>
                 <CircleDollarSign size={24} color="#D4D4D8" />
                 <Title>Vencimento da Fatura</Title>
               </View>
-              <Text style={styles.cardSubtitle}>Sua fatura vence em:</Text>
+              <Line /> 
+              <Text style={styles.cardSubtitle}>Sua fatura vence em</Text>
               <Text style={styles.cardDueDate}>30/10/2024</Text>
-              <TouchableOpacity style={styles.paymentButton}>
-                <Text style={styles.paymentButtonText}>Pagar Fatura</Text>
-              </TouchableOpacity>
+              <ButtonSmall
+                title="Pagar Fatura"
+                onPress={() => navigation.navigate('PaymentMethod')}
+              />
             </View>
           </Card>
         </View>
@@ -63,8 +67,9 @@ export default function Finance() {
                 <Scroll size={24} color="#D4D4D8" />
                 <Title>Histórico de Faturas</Title>
               </View>
+              <Line /> 
               <Text style={styles.subText}>
-              Consulte aqui o resumo das suas últimas faturas e acompanhe facilmente os valores e vencimentos de cada mês.
+                Consulte aqui o resumo das suas últimas faturas e acompanhe facilmente os valores e vencimentos de cada mês.
               </Text>
               {loading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
@@ -96,7 +101,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   cardContainer: {
     marginBottom: 20,
@@ -117,14 +121,14 @@ const styles = StyleSheet.create({
   titleWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
-    paddingTop: 10, // Adiciona um espaçamento acima do título
+    marginBottom: 3,
+    paddingTop: 10, 
   },
   cardSubtitle: {
     fontSize: 16,
     color: '#D3D3D8',
     textAlign: 'center',
-    marginBottom: 5,
+    marginTop: 5,
   },
   cardDueDate: {
     fontSize: 22,
@@ -132,27 +136,16 @@ const styles = StyleSheet.create({
     color: '#3B82F6',
     marginBottom: 15,
   },
-  paymentButton: {
-    backgroundColor: '#3B82F6',
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
-    width: '60%',
-  },
-  paymentButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: 10,
-    paddingHorizontal: 5,
+    justifyContent: 'space-between',
   },
   itemText: {
     fontSize: 16,
     color: '#FFFFFF',
+    alignContent: 'flex-start',
+    justifyContent: 'flex-start',
   },
 });

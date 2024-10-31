@@ -19,7 +19,7 @@ import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
 
 const backgroundImage = require("../../images/mixed.jpg");
-const logoImage = require("../../../assets/yoda.webp");
+const logoImage = require("../../../assets/OnCampusLogo.svg");
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
