@@ -19,6 +19,7 @@ import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
 import Icon from "react-native-vector-icons/FontAwesome";
 import GoogleLoginButton from './GoogleLoginButton';
+import FacebookLoginButton from './FacebookLoginButton'; // Importando o botão de login do Facebook
 
 const backgroundImage = require("../../images/mixed.jpg");
 const logoImage = require("../../../assets/logo.png");
@@ -83,7 +84,7 @@ export default function Login({ onLogin }) {
         >
           <View style={styles.container}>
             <Image source={logoImage} style={styles.logo} />
-            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitario!</Text> 
+            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitário!</Text> 
             <View style={styles.inputContainer}>
               <Mail size={20} color="#887E7E" style={styles.icon} />
               <TextInput
@@ -116,12 +117,8 @@ export default function Login({ onLogin }) {
             </TouchableOpacity>
             <Text style={styles.socialLoginText}>ou</Text>
             <View style={styles.iconContainer}>
-              <TouchableOpacity style={styles.icon}>
-                <View style={styles.ovalIcon}>
-                  <Icon name="facebook" size={30} color="#D4D4D8" />
-                </View>
-              </TouchableOpacity>
-              <GoogleLoginButton style={styles.icon} />
+              <FacebookLoginButton style={styles.icon} /> 
+              <GoogleLoginButton style={styles.icon} /> 
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
                   <Icon name="apple" size={30} color="#D4D4D8" />

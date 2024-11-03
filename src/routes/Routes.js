@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Bell } from 'lucide-react-native';
 import Login from '../pages/auth/Login';
 import Home from '../pages/home/Home';
 import Profile from '../pages/home/Profile';
@@ -17,14 +18,25 @@ import SignUpScreen from '../pages/auth/SignUpScreen';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import PaymentMethod from '../pages/finance/PaymentMethod';
 import PixPayment from '../pages/finance/PixPayment';
+import Notifications from '../pages/notifications/Notifications';
+import UserData from '../pages/home/UserData';
+import Documents from '../pages/notifications/Notifications';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+function HeaderRightBell({ navigation }) {
+  return (
+    <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={{ marginRight: 16 }}>
+      <Bell color="#fff" size={24} />
+    </TouchableOpacity>
+  );
+}
+
 function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({ navigation, route }) => ({
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
@@ -38,6 +50,7 @@ function TabNavigator() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        headerRight: () => <HeaderRightBell navigation={navigation} />, // Adiciona o ícone de sino no header
       })}
     >
       <Tab.Screen 
@@ -47,14 +60,7 @@ function TabNavigator() {
           tabBarIcon: ({ size, color }) => (
             <Feather name="home" size={size} color={color} />
           ),
-          headerTitle: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
-                Página Inicial
-              </Text>
-              <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
-            </View>
-          ),
+          headerTitle: 'Página Inicial',
         }}
       />
       <Tab.Screen 
@@ -64,7 +70,6 @@ function TabNavigator() {
           tabBarIcon: ({ size, color }) => (
             <Feather name="map-pin" size={size} color={color} />
           ),
-          headerShown: true,
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 16 }}>
               <Feather name="chevron-left" size={24} color="#ffffff" />
@@ -90,14 +95,7 @@ function TabNavigator() {
           tabBarIcon: ({ size, color }) => (
             <Feather name="list" size={size} color={color} />
           ),
-          headerTitle: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
-                Votação
-              </Text>
-              <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
-            </View>
-          ),
+          headerTitle: 'Votação',
         }}
       />
       <Tab.Screen 
@@ -107,14 +105,7 @@ function TabNavigator() {
           tabBarIcon: ({ size, color }) => (
             <Feather name="user" size={size} color={color} />
           ),
-          headerTitle: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff' }}>
-                Perfil
-              </Text>
-              <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
-            </View>
-          ),
+          headerTitle: 'Perfil',
         }}
       />
     </Tab.Navigator>
@@ -145,128 +136,105 @@ export default function Routes() {
             <Stack.Screen 
               name="Finance" 
               component={Finance} 
-              options={{
+              options={({ navigation }) => ({
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: '#171717',
                 },
                 headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 22,
-                  textAlign: 'center',
-                  flex: 1,
-                },
-                headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
-                      Financeiro
-                    </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
-                  </View>
-                ),
-              }} 
+                headerTitle: 'Financeiro',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })} 
             />
             <Stack.Screen 
               name="PaymentMethod" 
               component={PaymentMethod} 
-              options={{
+              options={({ navigation }) => ({
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: '#171717',
                 },
                 headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 22,
-                  textAlign: 'center',
-                  flex: 1,
-                },
-                headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
-                      Método de Pagamento
-                    </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
-                  </View>
-                ),
-              }} 
+                headerTitle: 'Método de Pagamento',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })} 
             />
-                        <Stack.Screen 
+            <Stack.Screen 
               name="PixPayment"
               component={PixPayment} 
-              options={{
+              options={({ navigation }) => ({
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: '#171717',
                 },
                 headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 22,
-                  textAlign: 'center',
-                  flex: 1,
-                },
-                headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
-                      Pix
-                    </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
-                  </View>
-                ),
-              }} 
+                headerTitle: 'Pix',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })} 
             />
-
             <Stack.Screen 
               name="Settings" 
               component={Settings} 
-              options={{
+              options={({ navigation }) => ({
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: '#171717',
                 },
                 headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 22,
-                  textAlign: 'center',
-                  flex: 1,
-                },
-                headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
-                      Configurações
-                    </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
-                  </View>
-                ),
-              }} 
+                headerTitle: 'Configurações',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })} 
             />
             <Stack.Screen 
               name="Terms" 
               component={Terms} 
+              options={({ navigation }) => ({
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: '#171717',
+                },
+                headerTintColor: '#fff',
+                headerTitle: 'Termos e Política',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })} 
+            />
+            <Stack.Screen 
+              name="UserData" 
+              component={UserData} 
+              options={({ navigation }) => ({
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: '#171717',
+                },
+                headerTintColor: '#fff',
+                headerTitle: 'Dados Pessoais',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })}
+            />
+            <Stack.Screen 
+              name="Documents" 
+              component={Documents} 
+              options={({ navigation }) => ({
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: '#171717',
+                },
+                headerTintColor: '#fff',
+                headerTitle: 'Documentos',
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })}
+            />
+            <Stack.Screen 
+              name="Notifications" 
+              component={Notifications} 
               options={{
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: '#171717',
                 },
                 headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 22,
-                  textAlign: 'center',
-                  flex: 1,
-                },
-                headerTitle: () => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
-                      Termos e Política
-                    </Text>
-                    <Feather name="chevron-right" size={18} color="#ffffff" style={{ marginBottom: -3, marginLeft: 4 }} />
-                  </View>
-                ),
-              }} 
+                headerTitle: 'Notificações',
+              }}
             />
           </>
         )}

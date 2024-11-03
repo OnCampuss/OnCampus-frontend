@@ -21,7 +21,6 @@ export default function Config() {
     setModalVisible(!modalVisible);
   };
 
-  // Função de logout, 'erro na saida'
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -78,7 +77,7 @@ export default function Config() {
                 Edite suas informações de perfil abaixo. Mantenha seus dados atualizados para garantir uma experiência personalizada.
               </Text>
 
-              <TouchableOpacity style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer} onPress={() => navigation.navigate('UserData')}>
                 <UserIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Pessoais</Text>
                 <View style={{ flex: 1 }} />
@@ -86,7 +85,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Senha', 'Opção para editar senha')}>
                 <LockKeyhole size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Senha</Text>
                 <View style={{ flex: 1 }} />
@@ -94,7 +93,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Dados Contratuais', 'Opção para visualizar dados contratuais')}>
                 <ScrollText size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Contratuais</Text>
                 <View style={{ flex: 1 }} />
@@ -102,7 +101,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer} onPress={() => navigation.navigate('Documents')}>
                 <FileUser size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Documentos</Text>
                 <View style={{ flex: 1 }} />
@@ -110,7 +109,7 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity style={styles.headerContainer}>
+              <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Endereço', 'Opção para editar endereço')}>
                 <MapPinHouseIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Endereço</Text>
                 <View style={{ flex: 1 }} />
@@ -241,4 +240,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
