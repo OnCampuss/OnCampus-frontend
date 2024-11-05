@@ -26,7 +26,17 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "@notifee/react-native",
+      ["expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0"
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {
