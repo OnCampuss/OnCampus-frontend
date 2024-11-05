@@ -4,7 +4,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import { BlurView } from 'expo-blur';
 
-// Importar a imagem mousePointer
 import mousePointer from '../images/mousePointer.png'; 
 
 const userData = {

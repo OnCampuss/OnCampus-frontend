@@ -13,20 +13,27 @@
     },
     "ios": {
       "supportsTablet": true,
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "com.oncampus.travel"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./google-services.json"
+      "package": "com.oncampus.travel"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "@react-native-google-signin/google-signin"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0c8927e1-91ed-4287-9ecc-6a48dca329ce"
+      },
+      "googleMapsApiKey": "AIzaSyDPltyLml_cP0kRFMu53lixPny7dTR_y-I"
+    },
+    "scheme": "oncampus" 
   }
 }

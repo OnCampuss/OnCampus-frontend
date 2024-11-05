@@ -3,28 +3,58 @@ import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import { supabase } from '../../services/supabase';
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from '@react-navigation/native';
 
-export default function GoogleLoginButton() {
+export default function GoogleLoginButton({ onLogin }) {
+  const navigation = useNavigation();
+
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '916468878707-mrgf520rhtmh3t3kd8m7a6v1tabr4c5n.apps.googleusercontent.com',
-    redirectUri: 'https://auth.expo.io/@seu-usuario/seu-app', 
+    clientId: '1051910795082-8ogrc292dfpdi9f1srdr79je1kem5sho.apps.googleusercontent.com',
+    redirectUri: 'https://pvlfdoyarqaignybhjid.supabase.co/auth/v1/callback', 
   });
 
   React.useEffect(() => {
+    console.log("useEffect executado com response:", response);
+
     if (response?.type === 'success') {
+      console.log("Resposta bem-sucedida do Google:", response);
       const { id_token } = response.params;
 
-      supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: id_token,
-      })
-      .then(({ data, error }) => {
-        console.log(data, error);
-      });
+      if (id_token) {
+        console.log("ID Token encontrado, iniciando signInWithIdToken...");
+        
+        supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: id_token,
+        })
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("Erro ao logar com Google:", error);
+          } else {
+            console.log("Login realizado com sucesso:", data);
+
+            if (onLogin) {
+              console.log("Chamando função onLogin...");
+              onLogin();
+            } else {
+              console.log("Navegando para Home...");
+              navigation.navigate("Home");
+            }
+          }
+        })
+        .catch((err) => {
+          console.error("Erro inesperado durante o signInWithIdToken:", err);
+        });
+      } else {
+        console.error("ID Token não encontrado.");
+      }
+    } else if (response?.type === 'error') {
+      console.error("Erro na resposta do Google:", response.error);
     }
   }, [response]);
 
   const handleGoogleLogin = () => {
+    console.log("Iniciando autenticação com Google...");
     promptAsync();
   };
 

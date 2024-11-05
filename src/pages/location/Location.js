@@ -1,54 +1,32 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ImageBackground, Animated, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Animated, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BusFront, MapPinCheck, MapPinPlus } from 'lucide-react-native';
+import { MapPinPlus } from 'lucide-react-native';
 import { Entypo } from '@expo/vector-icons';
-import * as LocationAPI from 'expo-location'; 
+import * as LocationAPI from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 import Line from '../../components/Line';
-import Title from '../../components/Title'; 
+import Title from '../../components/Title';
+import TravelInfoCard from '../../components/TravelInfoCard';
+import { GOOGLE_MAPS_APIKEY } from '../../config/config';
 
-const busImage = require('../../images/bus.webp');
 const backgroundImage = require('../../images/Group.png');
 
-const TravelInfoCard = () => {
-  return (
-    <View style={styles.travelInfoContainer}>
-      <View style={styles.departureContainer}>
-        <BusFront size={24} color="#D4D4D8" style={styles.busIcon} />
-        <Text style={styles.label}>
-          Saída: <Text style={styles.value}>Hotel Plaza</Text>
-        </Text>
-      </View>
-      <Text style={styles.tripInfo}>Viagem de 30 minutos (40 km)</Text>
-      <View style={styles.dashedLine} />
-      <View style={styles.destinationContainer}>
-        <MapPinCheck size={24} color="#D4D4D8" style={styles.pinIcon} />
-        <Text style={styles.label}>
-          Destino: <Text style={styles.value}>Atitus Edu</Text>
-        </Text>
-      </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Horários</Text>
-      </TouchableOpacity>
-      <View style={{ marginTop: 10 }}>
-        <Line />
-      </View>
-      <Text style={styles.tripDescription}>
-        Saída do Hotel Plaza Sul com destino à Atitus Educação. Retorno previsto para as 22:20, com embarque na lateral da Atitus.
-      </Text>
-    </View>
-  );
+const DESTINATION = {
+  latitude: -28.2616,
+  longitude: -52.4089,
 };
 
 export default function Location() {
-  const translateY = useRef(new Animated.Value(590)).current; 
-  const [isPulled, setIsPulled] = useState(false); 
+  const translateY = useRef(new Animated.Value(590)).current;
+  const [isPulled, setIsPulled] = useState(false);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [showRoute, setShowRoute] = useState(false);
 
   const toggleCard = () => {
-    const toValue = isPulled ? 590 : 0;
+    const toValue = isPulled ? 581 : 0;
     Animated.timing(translateY, {
       toValue: toValue,
       duration: 800,
@@ -73,7 +51,6 @@ export default function Location() {
             },
             (newLocation) => {
               setLocation(newLocation);
-              console.log("Localização atualizada => ", newLocation);
             }
           );
         } else {
@@ -95,11 +72,7 @@ export default function Location() {
 
   return (
     <GestureHandlerRootView style={styles.flex}>
-      <ImageBackground 
-        source={backgroundImage}
-        style={styles.background}
-        resizeMode="cover"
-      >
+      <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
         <View style={styles.container}>
           {errorMsg ? (
             <Text style={styles.errorText}>{errorMsg}</Text>
@@ -109,8 +82,8 @@ export default function Location() {
               region={{
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
-                latitudeDelta: 0.003,
-                longitudeDelta: 0.002,
+                latitudeDelta: 0.001,
+                longitudeDelta: 0.001,
               }}
               showsUserLocation={true}
             >
@@ -121,15 +94,32 @@ export default function Location() {
                 }}
                 title="Você está aqui"
               />
+              <Marker coordinate={DESTINATION} title="Destino" description="R. Sen. Pinheiro, 304" />
+              {showRoute && (
+                <MapViewDirections
+                  origin={{
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                  }}
+                  destination={DESTINATION}
+                  apikey={GOOGLE_MAPS_APIKEY}
+                  strokeWidth={4}
+                  strokeColor="blue"
+                />
+              )}
             </MapView>
           ) : (
             <Text style={styles.loadingText}>Carregando mapa...</Text>
           )}
 
+          <TouchableOpacity style={styles.routeButton} onPress={() => setShowRoute(true)}>
+            <MapPinPlus size={24} color="#fff" />
+          </TouchableOpacity>
+
           <Animated.View style={[styles.card, { transform: [{ translateY }] }]}>
             <View style={styles.cardHeader}>
               <MapPinPlus size={24} color="#D4D4D8" style={styles.icon} />
-              <Text style={styles.cardTitle}>Informações da Viagem</Text>
+              <Title style={styles.cardTitle}>Informações da Viagem</Title>
               <TouchableOpacity style={styles.iconContainer} onPress={toggleCard}>
                 <Entypo name={isPulled ? "chevron-thin-down" : "chevron-thin-up"} size={20} color="#D4D4D8" />
               </TouchableOpacity>
@@ -139,14 +129,8 @@ export default function Location() {
 
             <Text style={styles.cardSubtitle}>Ônibus da Viagem</Text>
 
-            <Image 
-              source={busImage} 
-              style={styles.busImage}
-            />
-
             <TravelInfoCard />
           </Animated.View>
-
         </View>
       </ImageBackground>
     </GestureHandlerRootView>
@@ -174,12 +158,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
   },
-  dashedLine: {
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
+  map: {
     width: '100%',
-    marginVertical: 10,
-    borderStyle: 'dashed',
+    height: '100%',
+  },
+  routeButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    backgroundColor: '#4A90E2',
+    padding: 15,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   card: {
     width: '100%',
@@ -188,119 +179,33 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     elevation: 5,
-    position: 'absolute', 
+    position: 'absolute',
     paddingTop: 20,
     paddingHorizontal: 20,
     justifyContent: 'flex-start',
-    alignItems: 'center', 
-    
+    alignItems: 'center',
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
     width: '100%',
   },
   cardTitle: {
-    fontSize: 25,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    textAlign: 'center', 
-    flex: 1, 
-    right: 10,
-    marginBottom: 10,
-  },
-  cardSubtitle: {
-    color: '#D4D4D8',
-    fontSize: 20,
-    marginTop: 10,
-    textAlign: 'center',
-    width: '100%',
-  },
-  busImage: {
-    width: 350,
-    height: 250,
-    borderRadius: 15,
-    marginTop: 10,
-  },
-  travelInfoContainer: {
-    marginTop: 20,
-    width: '100%',
-    padding: 20,
-    backgroundColor: '#3B3B3F',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  departureContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  label: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
     marginLeft: 10,
   },
-  value: {
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  tripInfo: {
-    color: 'gray',
-    fontSize: 14,
-    marginBottom: 10,
-  },
-  destinationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  pinIcon: {
-    marginRight: 10,
-  },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  line: {
-    marginTop: 20,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: '#007bff',
-    borderRadius: 2,
-    marginTop: 10,
-  },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-  tripDescription: {
-    color: 'white',
-    fontSize: 14,
-    marginTop: 10,
-    textAlign: 'center',
-  },
   iconContainer: {
-    position: 'absolute',
-    right: 0,
+    padding: 10,
   },
   icon: {
     marginRight: 10,
+  },
+  cardSubtitle: {
+    color: '#D4D4D8',
+    fontSize: 16,
+    marginTop: 5,
   },
 });

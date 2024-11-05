@@ -10,7 +10,6 @@ export default function Notifications() {
     { id: 3, title: 'Pagamento Confirmado', message: 'Seu pagamento foi processado com sucesso.', read: true },
   ]);
 
-  // Função para marcar todas as notificações como lidas
   const markAllAsRead = () => {
     const updatedNotifications = notifications.map((notification) => ({
       ...notification,
@@ -20,7 +19,6 @@ export default function Notifications() {
     Alert.alert('Notificações', 'Todas as notificações foram marcadas como lidas.');
   };
 
-  // Função para marcar uma notificação específica como lida
   const markAsRead = (id) => {
     const updatedNotifications = notifications.map((notification) =>
       notification.id === id ? { ...notification, read: true } : notification
@@ -28,21 +26,26 @@ export default function Notifications() {
     setNotifications(updatedNotifications);
   };
 
-  // Simulação de recebimento de nova notificação
-  const addNotification = () => {
+  // Função para simular recebimento de nova notificação
+  const addNotification = (notification) => {
+    setNotifications([notification, ...notifications]);
+  };
+
+  // Simulação de uma nova notificação, que poderia ser chamada quando uma notificação for recebida
+  const simulateReceivedNotification = () => {
     const newNotification = {
       id: notifications.length + 1,
-      title: 'Nova Notificação',
-      message: 'Esta é uma nova notificação recebida.',
+      title: 'Nova Notificação 📬',
+      message: 'Esta é uma notificação de teste!',
       read: false,
     };
-    setNotifications([newNotification, ...notifications]); // Adiciona ao topo
+    addNotification(newNotification);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Title>Notificações</Title>
+        <Title>Seu Painel</Title>
         <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
           <Text style={styles.markAllText}>Marcar todas como lidas</Text>
           <CheckCircle size={20} color="#2563EB" />
@@ -59,7 +62,7 @@ export default function Notifications() {
             ]}
             onPress={() => {
               Alert.alert(notification.title, notification.message);
-              markAsRead(notification.id); // Marca como lida
+              markAsRead(notification.id);
             }}
           >
             <View style={styles.iconContainer}>
@@ -75,7 +78,7 @@ export default function Notifications() {
       </ScrollView>
 
       {/* Botão para simular nova notificação */}
-      <TouchableOpacity style={styles.newNotificationButton} onPress={addNotification}>
+      <TouchableOpacity style={styles.newNotificationButton} onPress={simulateReceivedNotification}>
         <Text style={styles.newNotificationText}>Simular Nova Notificação</Text>
       </TouchableOpacity>
     </View>

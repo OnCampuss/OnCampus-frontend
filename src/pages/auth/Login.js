@@ -41,13 +41,23 @@ export default function Login({ onLogin }) {
   }, []);
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Campos obrigatórios", "Por favor, preencha o email e a senha.");
+      return;
+    }
+  
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
+  
     if (error) {
-      Alert.alert("Erro", error.message);
+      // Aqui, você pode verificar a mensagem de erro para fornecer feedback mais específico.
+      if (error.message.includes("invalid email or password")) {
+        Alert.alert("Erro de Login", "Credenciais inválidas. Verifique seu email e senha.");
+      } else {
+        Alert.alert("Erro", error.message);
+      }
     } else {
       if (data.user && data.user.email_confirmed_at) {
         onLogin();
@@ -62,6 +72,7 @@ export default function Login({ onLogin }) {
       }
     }
   };
+  
 
   const navigateToSignUp = () => {
     navigation.navigate("SignUpScreen");

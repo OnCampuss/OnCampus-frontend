@@ -2,17 +2,17 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import Routes from './src/routes/Routes';
+import Constants from 'expo-constants';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simula um tempo de carregamento de 2 segundos
     const timer = setTimeout(() => {
-      setIsLoading(false); // Altera o estado para ocultar a tela de splash
+      setIsLoading(false);
     }, 2000);
 
-    return () => clearTimeout(timer); // Limpa o timer ao desmontar o componente
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -20,15 +20,15 @@ export default function App() {
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <Image
-            source={require('./assets/logo.png')} // Imagem da tela de splash
+            source={require('./assets/logo.png')}
             style={styles.splashImage}
             resizeMode="contain"
           />
-          <ActivityIndicator size="large" color="#ffffff" /> 
+          <ActivityIndicator size="large" color="#ffffff" />
           <Text style={styles.loadingText}>Carregando...</Text>
         </View>
       ) : (
-        <Routes />
+        <Routes googleMapsApiKey={Constants.manifest?.extra?.googleMapsApiKey} />
       )}
       <StatusBar style="light" backgroundColor="#171717" hidden={isLoading} />
     </>
@@ -40,16 +40,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#171717', // Cor de fundo enquanto carrega
+    backgroundColor: '#171717',
   },
   splashImage: {
-    width: '80%', // Ajuste a largura conforme necessário
-    height: '40%', // Ajuste a altura conforme necessário
-    marginBottom: 20, // Espaçamento abaixo da imagem
+    width: '80%',
+    height: '40%',
+    marginBottom: 20,
   },
   loadingText: {
-    color: '#ffffff', // Cor do texto
-    fontSize: 20, // Tamanho do texto
-    marginTop: 20, // Espaçamento acima do texto
+    color: '#ffffff',
+    fontSize: 20,
+    marginTop: 20,
   },
 });
