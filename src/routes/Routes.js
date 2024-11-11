@@ -18,9 +18,9 @@ import SignUpScreen from '../pages/auth/SignUpScreen';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import PaymentMethod from '../pages/finance/PaymentMethod';
 import PixPayment from '../pages/finance/PixPayment';
-import Notifications from '../pages/notifications/Notifications';
+import NotificationsScreen from '../pages/notifications/NotificationsScreen'; // Corrigido
 import UserData from '../pages/home/UserData';
-import Documents from '../pages/notifications/Notifications';
+import Documents from '../pages/personalData/Documents';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -50,7 +50,7 @@ function TabNavigator() {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-        headerRight: () => <HeaderRightBell navigation={navigation} />, // Adiciona o ícone de sino no header
+        headerRight: () => <HeaderRightBell navigation={navigation} />, 
       })}
     >
       <Tab.Screen 
@@ -226,7 +226,7 @@ export default function Routes() {
             />
             <Stack.Screen 
               name="Notifications" 
-              component={Notifications} 
+              component={NotificationsScreen}  // Corrigido
               options={{
                 headerShown: true,
                 headerStyle: {

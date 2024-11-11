@@ -20,7 +20,7 @@ export default function App() {
     <>
       {isLoading ? (
         <LinearGradient
-          colors={['#171717', '#171616']} // Gradiente de cor
+          colors={['#171717', '#171616']} 
           style={styles.loadingContainer}
         >
           <StatusBar style="light" backgroundColor="#171717" />

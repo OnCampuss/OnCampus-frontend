@@ -27,7 +27,6 @@
     },
     "plugins": [
       "@react-native-google-signin/google-signin",
-      "@notifee/react-native",
       ["expo-build-properties",
         {
           "android": {
