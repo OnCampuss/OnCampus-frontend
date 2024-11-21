@@ -18,54 +18,64 @@ import SignUpScreen from '../pages/auth/SignUpScreen';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import PaymentMethod from '../pages/finance/PaymentMethod';
 import PixPayment from '../pages/finance/PixPayment';
-import NotificationsScreen from '../pages/notifications/NotificationsScreen'; // Corrigido
+import NotificationsScreen from '../pages/notifications/NotificationsScreen';
 import UserData from '../pages/home/UserData';
 import Documents from '../pages/personalData/Documents';
+import DriverAccess from '../pages/admin/DriverAccess';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function HeaderRightBell({ navigation }) {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={{ marginRight: 16 }}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Notifications')}
+      style={{ marginRight: 16 }}
+    >
       <Bell color="#fff" size={24} />
     </TouchableOpacity>
+  );
+}
+
+function HeaderWithIcon({ title }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff' }}>{title}</Text>
+      <Feather
+        name="chevron-right"
+        size={20}
+        color="#fff"
+        style={{ marginLeft: 3, marginTop: 2 }}
+      />
+    </View>
   );
 }
 
 function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ navigation, route }) => ({
+      screenOptions={({ navigation }) => ({
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          backgroundColor: 'black',
-          borderTopColor: 'transparent',
-        },
-        headerStyle: {
-          backgroundColor: '#171717',
-        },
+        tabBarStyle: { backgroundColor: 'black', borderTopColor: 'transparent' },
+        headerStyle: { backgroundColor: '#171717' },
         headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-        headerRight: () => <HeaderRightBell navigation={navigation} />, 
+        headerRight: () => <HeaderRightBell navigation={navigation} />,
       })}
     >
-      <Tab.Screen 
-        name="Inicio" 
-        component={Home} 
+      <Tab.Screen
+        name="Inicio"
+        component={Home}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Feather name="home" size={size} color={color} />
           ),
-          headerTitle: 'Página Inicial',
+          headerTitle: () => <HeaderWithIcon title="Página Inicial" />,
         }}
       />
-      <Tab.Screen 
-        name="Localização" 
-        component={Location} 
+      <Tab.Screen
+        name="Localização"
+        component={Location}
         options={({ navigation }) => ({
           tabBarIcon: ({ size, color }) => (
             <Feather name="map-pin" size={size} color={color} />
@@ -76,11 +86,12 @@ function TabNavigator() {
             </TouchableOpacity>
           ),
           tabBarStyle: { display: 'none' },
+          headerTitle: () => <HeaderWithIcon title="Localização" />,
         })}
       />
-      <Tab.Screen 
-        name="Novo" 
-        component={ButtonNew} 
+      <Tab.Screen
+        name="Novo"
+        component={ButtonNew}
         options={{
           tabBarIcon: ({ size, color, focused }) => (
             <ButtonNew size={size} color={color} focused={focused} />
@@ -88,24 +99,24 @@ function TabNavigator() {
           tabBarLabel: () => null,
         }}
       />
-      <Tab.Screen 
-        name="Votação" 
-        component={Voting} 
+      <Tab.Screen
+        name="Votação"
+        component={Voting}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Feather name="list" size={size} color={color} />
           ),
-          headerTitle: 'Votação',
+          headerTitle: () => <HeaderWithIcon title="Votação" />,
         }}
       />
-      <Tab.Screen 
-        name="Perfil" 
-        component={Profile} 
+      <Tab.Screen
+        name="Perfil"
+        component={Profile}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Feather name="user" size={size} color={color} />
           ),
-          headerTitle: 'Perfil',
+          headerTitle: () => <HeaderWithIcon title="Perfil" />,
         }}
       />
     </Tab.Navigator>
@@ -117,6 +128,7 @@ export default function Routes() {
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
+    
   };
 
   return (
@@ -125,115 +137,111 @@ export default function Routes() {
         {!isLoggedIn ? (
           <>
             <Stack.Screen name="Login">
-              {() => <Login onLogin={handleLoginSuccess} />} 
+              {(props) => <Login {...props} onLogin={handleLoginSuccess} />}
             </Stack.Screen>
+
             <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
             <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
           </>
         ) : (
           <>
             <Stack.Screen name="Home" component={TabNavigator} />
-            <Stack.Screen 
-              name="Finance" 
-              component={Finance} 
+            <Stack.Screen
+              name="Finance"
+              component={Finance}
               options={({ navigation }) => ({
                 headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
+                headerStyle: { backgroundColor: '#171717' },
                 headerTintColor: '#fff',
-                headerTitle: 'Financeiro',
+                headerTitle: () => <HeaderWithIcon title="Financeiro" />,
                 headerRight: () => <HeaderRightBell navigation={navigation} />,
-              })} 
+              })}
             />
-            <Stack.Screen 
-              name="PaymentMethod" 
-              component={PaymentMethod} 
+            <Stack.Screen
+              name="PaymentMethod"
+              component={PaymentMethod}
               options={({ navigation }) => ({
                 headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
+                headerStyle: { backgroundColor: '#171717' },
                 headerTintColor: '#fff',
-                headerTitle: 'Método de Pagamento',
+                headerTitle: () => <HeaderWithIcon title="Método de Pagamento" />,
                 headerRight: () => <HeaderRightBell navigation={navigation} />,
-              })} 
+              })}
             />
-            <Stack.Screen 
+            <Stack.Screen
               name="PixPayment"
-              component={PixPayment} 
+              component={PixPayment}
               options={({ navigation }) => ({
                 headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
+                headerStyle: { backgroundColor: '#171717' },
                 headerTintColor: '#fff',
-                headerTitle: 'Pix',
-                headerRight: () => <HeaderRightBell navigation={navigation} />,
-              })} 
-            />
-            <Stack.Screen 
-              name="Settings" 
-              component={Settings} 
-              options={({ navigation }) => ({
-                headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
-                headerTintColor: '#fff',
-                headerTitle: 'Configurações',
-                headerRight: () => <HeaderRightBell navigation={navigation} />,
-              })} 
-            />
-            <Stack.Screen 
-              name="Terms" 
-              component={Terms} 
-              options={({ navigation }) => ({
-                headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
-                headerTintColor: '#fff',
-                headerTitle: 'Termos e Política',
-                headerRight: () => <HeaderRightBell navigation={navigation} />,
-              })} 
-            />
-            <Stack.Screen 
-              name="UserData" 
-              component={UserData} 
-              options={({ navigation }) => ({
-                headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
-                headerTintColor: '#fff',
-                headerTitle: 'Dados Pessoais',
+                headerTitle: () => <HeaderWithIcon title="Pix" />,
                 headerRight: () => <HeaderRightBell navigation={navigation} />,
               })}
             />
-            <Stack.Screen 
-              name="Documents" 
-              component={Documents} 
+            <Stack.Screen
+              name="Settings"
+              component={Settings}
               options={({ navigation }) => ({
                 headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
+                headerStyle: { backgroundColor: '#171717' },
                 headerTintColor: '#fff',
-                headerTitle: 'Documentos',
+                headerTitle: () => <HeaderWithIcon title="Configurações" />,
                 headerRight: () => <HeaderRightBell navigation={navigation} />,
               })}
             />
-            <Stack.Screen 
-              name="Notifications" 
-              component={NotificationsScreen}  // Corrigido
+            <Stack.Screen
+              name="Terms"
+              component={Terms}
+              options={({ navigation }) => ({
+                headerShown: true,
+                headerStyle: { backgroundColor: '#171717' },
+                headerTintColor: '#fff',
+                headerTitle: () => <HeaderWithIcon title="Termos e Política" />,
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })}
+            />
+            <Stack.Screen
+              name="UserData"
+              component={UserData}
+              options={({ navigation }) => ({
+                headerShown: true,
+                headerStyle: { backgroundColor: '#171717' },
+                headerTintColor: '#fff',
+                headerTitle: () => <HeaderWithIcon title="Dados Pessoais" />,
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })}
+            />
+            <Stack.Screen
+              name="Documents"
+              component={Documents}
+              options={({ navigation }) => ({
+                headerShown: true,
+                headerStyle: { backgroundColor: '#171717' },
+                headerTintColor: '#fff',
+                headerTitle: () => <HeaderWithIcon title="Documentos" />,
+                headerRight: () => <HeaderRightBell navigation={navigation} />,
+              })}
+            />
+            <Stack.Screen
+              name="Notifications"
+              component={NotificationsScreen}
               options={{
                 headerShown: true,
-                headerStyle: {
-                  backgroundColor: '#171717',
-                },
+                headerStyle: { backgroundColor: '#171717' },
                 headerTintColor: '#fff',
-                headerTitle: 'Notificações',
+                headerTitle: () => <HeaderWithIcon title="Notificações" />,
+              }}
+            />
+            <Stack.Screen
+              name="DriverAccess"
+              component={DriverAccess}
+              options={{
+                headerShown: true,
+                headerStyle: { backgroundColor: '#171717' },
+                headerTintColor: '#fff',
+                headerTitle: () => <HeaderWithIcon title="Acesso do Motorista" />,
+                headerLeft: null,
               }}
             />
           </>

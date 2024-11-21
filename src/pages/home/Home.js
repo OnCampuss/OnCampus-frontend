@@ -9,7 +9,6 @@ import { Newspaper, BellRing } from 'lucide-react-native';
 import DailyVote from '../../components/DailyVote';
 import FinanceCard from '../../components/FinanceCard'; 
 import Title from '../../components/Title';
-import RegistrationPrompt from '../../components/RegistrationPrompt';
 
 const backgroundImage = require('../../images/Group.png');
 
@@ -37,7 +36,6 @@ export default function Home() {
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <ScrollView contentContainerStyle={styles.container}>
-        {showPrompt && <RegistrationPrompt onComplete={handleRegistrationComplete} />}
         
         <Carteirinha />
         

@@ -7,6 +7,8 @@ import HairLine from '../../components/HairLine';
 import { UserRoundCogIcon, UserIcon, ChevronRight, LockKeyhole, ScrollText, FileUser, MapPinHouseIcon, LogOut } from 'lucide-react-native';
 import { supabase } from '../../services/supabase';
 import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
+import LogoutButton from "../../components/LogoutButton";
 
 const backgroundImage = require('../../images/Group.png');
 const bannerImage = require('../../images/banner.jpg');
@@ -21,20 +23,23 @@ export default function Config() {
     setModalVisible(!modalVisible);
   };
 
+
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        })
+      );
       Alert.alert('Sucesso', 'Logout realizado com sucesso!');
     } catch (error) {
       console.error('Erro ao deslogar:', error);
       Alert.alert('Erro', 'Ocorreu um erro ao realizar o logout.');
     }
   };
-
   return (
     <ImageBackground 
       source={backgroundImage}
@@ -125,7 +130,15 @@ export default function Config() {
               </TouchableOpacity>
             </View>
           </Card>
+          <TouchableOpacity onPress={handleLogout} style={styles.headerContainer}>
+  <LogOut size={24} color="#D4D4D8" />
+  <Text style={styles.titleWithIcon}>Sair do Aplicativo</Text>
+  <View style={{ flex: 1 }} />
+  <ChevronRight size={24} color="#D4D4D8" />
+</TouchableOpacity>
+
         </View>
+
       </ScrollView>
 
       <Modal

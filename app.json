@@ -13,21 +13,30 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.oncampus.travel"
+      "bundleIdentifier": "com.oncampus.travel",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.oncampus.travel"
+      "package": "com.oncampus.travel",
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "com.google.android.c2dm.permission.RECEIVE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "@react-native-google-signin/google-signin",
-      ["expo-build-properties",
+      [
+        "expo-build-properties",
         {
           "android": {
             "compileSdkVersion": 34,
@@ -43,6 +52,6 @@
       },
       "googleMapsApiKey": "AIzaSyDPltyLml_cP0kRFMu53lixPny7dTR_y-I"
     },
-    "scheme": "oncampus" 
+    "scheme": "oncampus"
   }
 }

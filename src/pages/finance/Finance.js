@@ -9,7 +9,6 @@ import ButtonSmall from '../../components/ButtonSmall';
 
 const backgroundImage = require('../../images/Group.png');
 
-// Função simulada para buscar dados (substitua por sua lógica real de fetch)
 const fetchInvoices = async () => {
   return [
     { id: 1, month: 'Setembro', amount: '100,00' },

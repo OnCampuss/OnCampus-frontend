@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Clipboard, Alert, ImageBackground } from 'react-native';
-import { DollarSign } from 'lucide-react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Clipboard, Alert, ImageBackground, Share } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import Line from '../../components/Line';
-import Card from '../../components/Card';
+import Card from '../../components/Card'; 
 import Title from '../../components/Title';
 
-const backgroundImage = require('../../images/Group.png'); // Imagem de fundo
+const backgroundImage = require('../../images/Group.png');
 
-const generateRandomPixCode = () => {
-  // Gera um código Pix aleatório (exemplo simples)
-  return Math.random().toString(36).substring(2, 15);
-};
+const generateRandomPixCode = () => Math.random().toString(36).substring(2, 15);
 
 export default function PixPayment() {
   const [pixCode, setPixCode] = useState(generateRandomPixCode());
@@ -21,21 +16,37 @@ export default function PixPayment() {
     Alert.alert('Código Copiado!', 'O código Pix foi copiado para a área de transferência.');
   };
 
+  const sharePixCode = async () => {
+    try {
+      await Share.share({
+        message: `Use este código Pix para realizar o pagamento: ${pixCode}`,
+      });
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível compartilhar o código Pix.');
+    }
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <View style={styles.container}>
-        <Card height={400} style={styles.card}>
+        <Card  height={480}>
           <View style={styles.cardContent}>
-            <View style={styles.titleContainer}>
-              <DollarSign size={24} color="#D4D4D8" style={styles.icon} />
-              <Title style={styles.title}>Forma de Pagamento</Title>
+            <Title>Pagamento Pix</Title>
+            <Text style={styles.description}>
+              Escaneie o QR Code ou copie o código abaixo para realizar o pagamento.
+            </Text>
+            <View style={styles.qrCodeContainer}>
+              <QRCode value={pixCode} size={200} />
             </View>
-            <Line style={styles.line} />
-            <QRCode value={pixCode} size={200} style={styles.qrCode} />
             <Text style={styles.pixCode}>{pixCode}</Text>
-            <TouchableOpacity style={styles.copyButton} onPress={copyToClipboard}>
-              <Text style={styles.copyButtonText}>Copiar Código</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity style={styles.button} onPress={copyToClipboard}>
+                <Text style={styles.buttonText}>Copiar Código</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={sharePixCode}>
+                <Text style={styles.buttonText}>Compartilhar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Card>
       </View>
@@ -54,46 +65,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card: {
-    padding: 20,
-    backgroundColor: '#2D2D32',
-    borderRadius: 15,
-    alignItems: 'center',
-    width: '100%', // Ajusta a largura do cartão
-  },
   cardContent: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
-  title: {
-    color: '#D4D4D8',
-    fontSize: 24,
-    marginBottom: 10,
+  description: {
+    color: '#A1A1AA',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  line: {
-    marginBottom: 20, // Espaço entre a linha e o QR code
+  qrCodeContainer: {
+    backgroundColor: '#1E1E22',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
   },
   pixCode: {
     color: '#D4D4D8',
     fontSize: 18,
-    marginTop: 20, // Espaçamento do texto do código Pix
+    marginBottom: 20,
+    textAlign: 'center',
   },
-  qrCode: {
-    marginTop: 20, // Aumentado para maior espaço acima
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
-  copyButton: {
-    marginTop: 20,
+  button: {
+    flex: 1,
     backgroundColor: '#4A4A4A',
     borderRadius: 10,
     padding: 10,
-    width: '60%', // Ajusta a largura do botão
-    alignItems: 'center', // Centraliza o texto no botão
+    marginHorizontal: 5,
+    alignItems: 'center',
   },
-  copyButtonText: {
+  buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
   },

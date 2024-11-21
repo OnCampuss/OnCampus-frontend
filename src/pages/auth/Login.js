@@ -19,7 +19,7 @@ import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
 import Icon from "react-native-vector-icons/FontAwesome";
 import GoogleLoginButton from './GoogleLoginButton';
-import FacebookLoginButton from './FacebookLoginButton'; // Importando o botão de login do Facebook
+import FacebookLoginButton from './FacebookLoginButton'; 
 
 const backgroundImage = require("../../images/mixed.jpg");
 const logoImage = require("../../../assets/logo.png");
@@ -33,12 +33,12 @@ export default function Login({ onLogin }) {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session && data.session.user.email_confirmed_at) {
-        onLogin();
+        onLogin();  // Certifique-se de que a função onLogin é passada corretamente
         navigation.navigate("Home");
       }
     };
     checkSession();
-  }, []);
+  }, [navigation, onLogin]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -46,56 +46,67 @@ export default function Login({ onLogin }) {
       return;
     }
   
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
   
-    if (error) {
-      // Aqui, você pode verificar a mensagem de erro para fornecer feedback mais específico.
-      if (error.message.includes("invalid email or password")) {
-        Alert.alert("Erro de Login", "Credenciais inválidas. Verifique seu email e senha.");
-      } else {
-        Alert.alert("Erro", error.message);
+      if (error) {
+        Alert.alert("Erro de Login", error.message);
+        return;
       }
-    } else {
-      if (data.user && data.user.email_confirmed_at) {
-        onLogin();
-        navigation.navigate("Home");
-      } else {
-        Alert.alert(
-          "Confirmação de E-mail",
-          "Por favor, verifique seu e-mail para confirmar sua conta."
-        );
-        await supabase.auth.signOut();
-        navigation.navigate("Login");
+  
+      if (data.user) {
+        const { data: userData, error: fetchError } = await supabase
+          .from("users")
+          .select("usertype")
+          .eq("email", data.user.email)
+          .single();
+  
+        if (fetchError || !userData) {
+          Alert.alert("Erro", "Não foi possível determinar o tipo de usuário.");
+          return;
+        }
+  
+        if (userData.usertype === "admin") {
+          onLogin();  
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "AdminDashboard" }],
+          });
+        } else if (userData.usertype === "driver") {
+          onLogin();
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "DriverAccess" }],
+          });
+        } else {
+          onLogin();
+          navigation.navigate("Home");
+        }
       }
+    } catch (error) {
+      Alert.alert("Erro", "Ocorreu um erro inesperado. Tente novamente.");
     }
   };
   
 
-  const navigateToSignUp = () => {
-    navigation.navigate("SignUpScreen");
-  };
+  const navigateToSignUp = () => navigation.navigate("SignUpScreen");
+  const navigateToForgotPassword = () => navigation.navigate("ForgotPasswordScreen");
 
-  const navigateToForgotPassword = () => {
-    navigation.navigate("ForgotPasswordScreen");
+  const handleLogout = () => {
+    supabase.auth.signOut();
+    navigation.navigate("Login");
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <ImageBackground
-          source={backgroundImage}
-          style={styles.background}
-          resizeMode="cover"
-        >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
           <View style={styles.container}>
             <Image source={logoImage} style={styles.logo} />
-            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitário!</Text> 
+            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitário!</Text>
             <View style={styles.inputContainer}>
               <Mail size={20} color="#887E7E" style={styles.icon} />
               <TextInput
@@ -122,14 +133,13 @@ export default function Login({ onLogin }) {
             <ButtonLarge title="Login" onPress={handleLogin} />
             <TouchableOpacity onPress={navigateToSignUp} style={styles.cad}>
               <Text style={styles.linkText}>
-                Não possui cadastro?
-                <Text style={styles.linkTextHighlight}> Cadastre-se</Text>
+                Não possui cadastro? <Text style={styles.linkTextHighlight}>Cadastre-se</Text>
               </Text>
             </TouchableOpacity>
             <Text style={styles.socialLoginText}>ou</Text>
             <View style={styles.iconContainer}>
-              <FacebookLoginButton style={styles.icon} /> 
-              <GoogleLoginButton style={styles.icon} /> 
+              <FacebookLoginButton style={styles.icon} />
+              <GoogleLoginButton style={styles.icon} />
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
                   <Icon name="apple" size={30} color="#D4D4D8" />
@@ -138,8 +148,7 @@ export default function Login({ onLogin }) {
             </View>
             <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPassword}>
               <Text style={styles.linkText}>
-                Esqueceu a senha?
-                <Text style={styles.linkTextHighlight}> Clique aqui</Text>
+                Esqueceu a senha? <Text style={styles.linkTextHighlight}>Clique aqui</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -148,6 +157,7 @@ export default function Login({ onLogin }) {
     </TouchableWithoutFeedback>
   );
 }
+
 
 const styles = StyleSheet.create({
   background: {

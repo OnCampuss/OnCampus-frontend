@@ -1,37 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, Alert, StyleSheet } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const NotificationsScreen = () => {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
 
   useEffect(() => {
-    // Solicitar permissão para notificações
     const requestPermissions = async () => {
+      if (!Device.isDevice) {
+        Alert.alert('Notificações não funcionam em simuladores!');
+        return;
+      }
+
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
 
-      // Se não houver permissão, pergunte ao usuário
       if (existingStatus !== 'granted') {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
 
       if (finalStatus !== 'granted') {
-        Alert.alert('Você precisa permitir notificações para usar este recurso!');
+        Alert.alert('Permissões para notificações foram negadas!');
         return;
       }
 
-      
       const token = await Notifications.getExpoPushTokenAsync();
       setExpoPushToken(token.data);
-      console.log('Expo Push Token:', token.data); 
+      console.log('Expo Push Token:', token.data);
     };
 
     requestPermissions();
 
-    // Listener para notificações recebidas
     const subscription = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
       console.log('Notificação recebida:', notification);
@@ -46,18 +56,23 @@ const NotificationsScreen = () => {
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Notificação Teste",
-        body: 'Este é um teste de notificação no Expo!',
+        body: "Esta é uma notificação local de teste!",
       },
-      trigger: {
-        seconds: 2, // A notificação será disparada em 2 segundos
-      },
+      trigger: { seconds: 2 },
     });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Configuração de Notificações</Text>
-      <Text>Token do Push: {expoPushToken}</Text>
+      {expoPushToken ? (
+        <>
+          <Text style={styles.text}>Token do Push:</Text>
+          <Text style={styles.token}>{expoPushToken}</Text>
+        </>
+      ) : (
+        <Text style={styles.text}>Obtendo token...</Text>
+      )}
       <Button title="Enviar Notificação" onPress={sendNotification} />
       {notification && (
         <View style={styles.notificationContainer}>
@@ -81,6 +96,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  token: {
+    fontSize: 12,
+    color: 'gray',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   notificationContainer: {
     marginTop: 20,
