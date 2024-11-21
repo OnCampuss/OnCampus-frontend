@@ -70,7 +70,7 @@ export default function Login({ onLogin }) {
         }
   
         if (userData.usertype === "admin") {
-          onLogin();  
+          onLogin();
           navigation.reset({
             index: 0,
             routes: [{ name: "AdminDashboard" }],
@@ -90,6 +90,7 @@ export default function Login({ onLogin }) {
       Alert.alert("Erro", "Ocorreu um erro inesperado. Tente novamente.");
     }
   };
+  
   
 
   const navigateToSignUp = () => navigation.navigate("SignUpScreen");
