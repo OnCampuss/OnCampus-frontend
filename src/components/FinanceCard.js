@@ -5,9 +5,9 @@ import { Feather } from '@expo/vector-icons';
 export default function FinanceCard() {
   return (
     <View style={styles.container}>
-      <Feather name="dollar-sign" size={24} color="white" style={styles.icon} />
+      <Feather name="dollar-sign" size={24} color="#D4D4D8" style={styles.icon} />
       <Text style={styles.text}>Financeiro</Text>
-      <Feather name="chevron-right" size={24} color="white" style={styles.arrowIcon} />
+      <Feather name="chevron-right" size={24} color="#D4D4D8" style={styles.arrowIcon} />
     </View>
   );
 }

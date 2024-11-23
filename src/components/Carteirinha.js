@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, Modal, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
-import mousePointer from '../../assets/images/mousePointer.png';
-
 import { BlurView } from 'expo-blur';
 
-
+import mousePointer from '../images/mousePointer.png'; 
 
 const userData = {
   title: 'Estudante',
@@ -163,9 +161,9 @@ const styles = StyleSheet.create({
   },
   mousePointer: {
     width: 50, 
-    height: 50,
+    height: 50, 
     marginTop: 20, 
-    left: 100,
+    left: 100, 
     transform: [{ rotate: '-6deg' }], 
   },
 });

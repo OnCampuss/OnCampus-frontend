@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+// src/pages/home/Home.js
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ImageBackground, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import Carteirinha from '../../components/Carteirinha';
 import AdaptiveCard from '../../components/AdaptativeCard';
@@ -9,22 +10,37 @@ import DailyVote from '../../components/DailyVote';
 import FinanceCard from '../../components/FinanceCard'; 
 import Title from '../../components/Title';
 
-const backgroundImage = require('../../../assets/images/Group.png');
+const backgroundImage = require('../../images/Group.png');
 
 export default function Home() {
+  const [showPrompt, setShowPrompt] = useState(false);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const checkRegistrationStatus = async () => {
+      const isRegistered = await AsyncStorage.getItem('isRegistered');
+      if (!isRegistered) {
+        setShowPrompt(true);
+      }
+    };
+
+    checkRegistrationStatus();
+  }, []);
+
+  const handleRegistrationComplete = async () => {
+    await AsyncStorage.setItem('isRegistered', 'true');
+    setShowPrompt(false);
+    Alert.alert('Cadastro completo!', 'Agora você pode acessar todas as funcionalidades.');
+  };
+
   return (
-    <ImageBackground 
-      source={backgroundImage}
-      style={styles.background}
-      resizeMode="cover" 
-    >
-      <View style={styles.container}>
+    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
+      <ScrollView contentContainerStyle={styles.container}>
+        
         <Carteirinha />
         
         <View style={styles.titleContainer}>
-          <Newspaper size={24} color="#FFFFFF" style={styles.titleIcon} />
+          <Newspaper size={24} color="#D4D4D8" style={styles.titleIcon} />
           <Title>Seu Feed</Title>
         </View>
 
@@ -37,14 +53,15 @@ export default function Home() {
             </AdaptiveCard>
           </TouchableOpacity>
 
-          <AdaptiveCard>
-            <View style={styles.innerCard}>
-              <FinanceCard />
-            </View>
-          </AdaptiveCard>
-
+          <TouchableOpacity onPress={() => navigation.navigate('Finance')}> 
+            <AdaptiveCard>
+              <View style={styles.innerCard}>
+                <FinanceCard />
+              </View>
+            </AdaptiveCard>
+          </TouchableOpacity>
           <View style={styles.titleContainer}>
-            <BellRing size={24} color="#FFFFFF" style={styles.titleIcon} />
+            <BellRing size={24} color="#D4D4D8" style={styles.titleIcon} />
             <Title>Ultimas notificações</Title>
           </View>
 
@@ -54,9 +71,8 @@ export default function Home() {
             </View>
           </AdaptiveCard>
 
-
         </View>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -67,11 +83,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#171717',
   },
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 20,
-  },titleContainer: {
+    paddingBottom: 20,
+  },
+  titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,

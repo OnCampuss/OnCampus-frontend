@@ -1,71 +1,97 @@
-import React, { useState } from "react";
-import { View, TextInput, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
-import { useNavigation } from '@react-navigation/native';
-import { Mail, LockKeyhole } from 'lucide-react-native';
+import React, { useState, useEffect } from "react"; 
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
+  Image,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Mail, LockKeyhole } from "lucide-react-native";
 import { supabase } from "../../services/supabase";
-import ButtonLarge from "../../components/ButtonLarge"; 
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import ButtonLarge from "../../components/ButtonLarge";
+import Icon from "react-native-vector-icons/FontAwesome";
+import GoogleLoginButton from './GoogleLoginButton';
+import FacebookLoginButton from './FacebookLoginButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const backgroundImage = require('../../images/mixed.jpg');
+const backgroundImage = require("../../images/mixed.jpg");
+const logoImage = require("../../../assets/logo.png");
 
-export default function Login({ onLogin }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const LoginScreen = ({ onLogin }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
+  // Função para lidar com o login
   const handleLogin = async () => {
+    console.log('Login iniciado...');
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-      if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          Alert.alert("Erro", "Senha ou email incorretos. Tente novamente.");
-        } else {
-          Alert.alert("Erro", error.message);
-        }
+      if (!email || !password) {
+        console.log('Campos de email ou senha vazios');
+        Alert.alert('Erro', 'Por favor, preencha todos os campos');
         return;
       }
-      onLogin();
-    } catch (error) {
-      Alert.alert("Erro", error.message);
-    }
-  };
 
-  const handleSignUp = async () => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
+      console.log('Enviando dados para o servidor...');
+      const response = await fetch('http://192.168.15.13:2000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       });
-      if (error) throw error;
-      Alert.alert("Sucesso", "Cadastro realizado com sucesso! Você pode fazer login agora.");
-    } catch (error) {
-      if (error.message.includes("Email already exists")) {
-        Alert.alert("Erro", "Você já possui uma conta com este email.");
+
+      console.log('Resposta recebida do servidor:', response);
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Login bem-sucedido. Salvando o token...');
+        await AsyncStorage.setItem('token', data.token);
+        Alert.alert('Sucesso', 'Login realizado com sucesso');
+        console.log('Login bem-sucedido!');
+
+        // Chama a função onLogin que foi passada via props
+        onLogin();
       } else {
-        Alert.alert("Erro", error.message);
+        console.log('Falha no login:', data.message || 'Falha no login');
+        Alert.alert('Erro', data.message || 'Falha no login');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      if (error instanceof TypeError) {
+        Alert.alert('Erro de Conexão', 'Não foi possível se conectar ao servidor');
+      } else {
+        Alert.alert('Erro', 'Erro ao se conectar com o servidor');
       }
     }
   };
 
-  const navigateToSignUp = () => {
-    navigation.navigate('SignUpScreen');
+  const navigateToSignUp = () => navigation.navigate("SignUpScreen");
+  const navigateToForgotPassword = () => navigation.navigate("ForgotPasswordScreen");
+
+  const handleLogout = () => {
+    supabase.auth.signOut();
+    navigation.navigate("Login");
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <ImageBackground 
-          source={backgroundImage} 
-          style={styles.background} 
-          resizeMode="cover"
-        >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
           <View style={styles.container}>
+            <Image source={logoImage} style={styles.logo} />
+            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitário!</Text>
             <View style={styles.inputContainer}>
               <Mail size={20} color="#887E7E" style={styles.icon} />
               <TextInput
@@ -90,33 +116,26 @@ export default function Login({ onLogin }) {
               />
             </View>
             <ButtonLarge title="Login" onPress={handleLogin} />
-            <TouchableOpacity onPress={navigateToSignUp}>
+            <TouchableOpacity onPress={navigateToSignUp} style={styles.cad}>
               <Text style={styles.linkText}>
-                Não possui cadastro? 
-                <Text style={styles.linkTextHighlight}> Cadastre-se</Text>
+                Não possui cadastro? <Text style={styles.linkTextHighlight}>Cadastre-se</Text>
               </Text>
             </TouchableOpacity>
-
-            <Text style={styles.socialLoginText}>Faça Login com</Text>
+            <Text style={styles.socialLoginText}>ou</Text>
             <View style={styles.iconContainer}>
+              <FacebookLoginButton style={styles.icon} />
+              <GoogleLoginButton style={styles.icon} />
               <TouchableOpacity style={styles.icon}>
                 <View style={styles.ovalIcon}>
-                  <Icon name="facebook" size={30} color="#fff" />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.icon}>
-                <View style={styles.ovalIcon}>
-                  <Icon name="google" size={30} color="#fff" />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.icon}>
-                <View style={styles.ovalIcon}>
-                  <Icon name="twitter" size={30} color="#fff" />
+                  <Icon name="apple" size={30} color="#D4D4D8" />
                 </View>
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={styles.imageContainer}>
+            <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPassword}>
+              <Text style={styles.linkText}>
+                Esqueceu a senha? <Text style={styles.linkTextHighlight}>Clique aqui</Text>
+              </Text>
+            </TouchableOpacity>
           </View>
         </ImageBackground>
       </KeyboardAvoidingView>
@@ -127,71 +146,80 @@ export default function Login({ onLogin }) {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: 'center',
-    width: '100%', 
-    height: '100%',
-    backgroundColor: '#171717',
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#171717",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    bottom: 45,
+  },
+  welcomeMessage: {
+    color: "#d4d4d2",
+    textAlign: "center",
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  forgotPassword: {
+    marginTop: 12,
+    textAlign: "center",
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#887E7E',
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#887E7E",
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 12,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
+  },
+  cad: {
+    marginTop: 12,
   },
   input: {
     height: 60,
     flex: 1,
     paddingLeft: 10,
-    color: '#D3D3D8',
+    color: "#D3D3D8",
   },
   icon: {
     marginLeft: 10,
   },
-  vectorImage: {
-    width: '100%',
-    height: 500,
-    bottom: -140,
-    position: 'absolute',
-  },
-  imageContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    alignItems: 'center',
-  },
   linkText: {
-    color: '#ffffff',
+    color: "#ffffff",
     marginTop: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   linkTextHighlight: {
-    color: '#0093E9',
-    fontWeight: 'bold',
+    color: "#0093E9",
+    fontWeight: "bold",
   },
   socialLoginText: {
-    color: '#ffffff',
-    textAlign: 'center',
+    color: "#ffffff",
+    textAlign: "center",
     marginVertical: 12,
   },
   iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   ovalIcon: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#3B5998',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#1E3A8A",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
+
+export default LoginScreen;

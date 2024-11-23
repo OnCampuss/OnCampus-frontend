@@ -4,18 +4,82 @@ import Line from '../../components/Line';
 import Card from '../../components/Card';
 import { SquareCheck, Timer } from 'lucide-react-native';
 
-const backgroundImage = require('../../../assets/images/Group.png');
+const backgroundImage = require('../../images/Group.png');
 
 export default function Voting() {
   const [vote, setVote] = useState('');
   const [timeRemaining, setTimeRemaining] = useState('');
-  const [secondsRemaining, setSecondsRemaining] = useState('');
+  const [secondsRemaining, setSecondsRemaining] = useState(0);
+  const [votes, setVotes] = useState([]); // Armazena votos existentes
 
-  const handleVote = () => {
-    if (vote) {
-      Alert.alert('Voto registrado', `Você votou: ${vote}`);
-    } else {
-      Alert.alert('Atenção', 'Por favor, escolha uma opção antes de votar.');
+  const userToken =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM2MzYyYmQxLTI3NjEtNGEzZS1hOTUzLTg2OTcxODNmOTdjZSIsImVtYWlsIjoidGVzdGUxMEB0ZXN0ZS5jb20iLCJpYXQiOjE3MzIzOTYwNjMsImV4cCI6MTczNDk4ODA2M30.RNwgS6ck6DyGwetXWdNB0rXnamztFSCdKMt-E9ccwH8';
+
+    const handleVote = async () => {
+      if (!vote) {
+        Alert.alert('Atenção', 'Por favor, escolha uma opção antes de votar.');
+        return;
+      }
+    
+      // Mapear as opções de voto para os campos da API
+      const voteMapping = {
+        "Vou e volto": { vou: true, volto: true, naoVou: false },
+        "Apenas vou": { vou: true, volto: false, naoVou: false },
+        "Apenas volto": { vou: false, volto: true, naoVou: false },
+        "Não vou hoje": { vou: false, volto: false, naoVou: true },
+      };
+    
+      const votePayload = voteMapping[vote];
+    
+      try {
+        const travelId = "edec26d1-9d61-4f3e-883e-9675643e846b"; // ID da viagem
+        const response = await fetch(
+          `http://192.168.15.13:2000/api/travels/${travelId}/votes`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userToken}`,
+            },
+            body: JSON.stringify(votePayload),
+          }
+        );
+    
+        if (response.ok) {
+          const data = await response.json();
+          Alert.alert('Voto registrado', `Você votou: ${vote}`);
+          setVotes([...votes, data.vote]);
+        } else {
+          const errorData = await response.json();
+          console.error('Erro no servidor:', errorData);
+          Alert.alert('Erro', 'Não foi possível registrar o voto.');
+        }
+      } catch (error) {
+        console.error('Erro ao registrar o voto:', error);
+        Alert.alert('Erro', 'Não foi possível registrar o voto.');
+      }
+    };
+    
+    
+
+  const loadVotes = async () => {
+    try {
+      const response = await fetch('http://192.168.15.13:2000/api/votes', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setVotes(data.body || []);
+      } else {
+        const errorData = await response.json();
+        console.error('Erro ao carregar votos:', errorData);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar votos:', error);
     }
   };
 
@@ -31,10 +95,10 @@ export default function Voting() {
       const seconds = diffInSeconds % 60;
 
       setSecondsRemaining(seconds);
-      return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
-    } else {
-      return '00:00';
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     }
+
+    return '00:00';
   };
 
   useEffect(() => {
@@ -42,17 +106,13 @@ export default function Voting() {
       setTimeRemaining(calculateTimeRemaining());
     }, 1000);
 
-    setTimeRemaining(calculateTimeRemaining());
+    loadVotes();
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <ImageBackground 
-      source={backgroundImage}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <View style={styles.container}>
         <View style={{ marginBottom: 20 }}>
           <Card height={460} style={styles.card}>
@@ -62,11 +122,13 @@ export default function Voting() {
                 <Text style={styles.title}>Votação do Dia</Text>
               </View>
               <Line />
-              <Text style={styles.subtitle}>Ônibus Atitus - Passo fundo - 06/06/2025</Text>
+              <Text style={styles.subtitle}>
+                Ônibus Atitus - Passo Fundo - 06/06/2025
+              </Text>
               <View style={styles.optionsContainer}>
                 {['Vou e volto', 'Apenas vou', 'Apenas volto', 'Não vou hoje'].map((option) => (
-                  <TouchableOpacity 
-                    key={option} 
+                  <TouchableOpacity
+                    key={option}
                     style={[styles.option, vote === option && styles.selectedOption]}
                     onPress={() => setVote(option)}
                   >
@@ -94,11 +156,12 @@ export default function Voting() {
               ) : (
                 <>
                   <Text style={styles.timerText}>{timeRemaining}</Text>
-                  <Text style={styles.secondsText}>{secondsRemaining < 10 ? `:0${secondsRemaining}` : `:${secondsRemaining}`}</Text>
+                  <Text style={styles.secondsText}>
+                    {secondsRemaining < 10 ? `:0${secondsRemaining}` : `:${secondsRemaining}`}
+                  </Text>
                 </>
               )}
             </View>
-            <Line />
           </Card>
         </View>
       </View>
@@ -128,7 +191,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'flex-start',
     flex: 1,
   },
   titleContainer: {
@@ -142,7 +204,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginBottom: 10,
     marginTop: 10,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
@@ -189,8 +250,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 5,
-    textAlign: 'center',
   },
   timerDisplay: {
     flexDirection: 'row',
