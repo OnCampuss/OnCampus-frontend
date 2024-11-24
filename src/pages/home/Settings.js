@@ -7,7 +7,7 @@ import Line from '../../components/Line';
 
 const backgroundImage = require('../../images/Group.png');
 
-const Settings = ({ navigation }) => {
+export default function Settings({ navigation }) {
   const handleLogout = () => {
     Alert.alert(
       "Logout",
@@ -16,9 +16,9 @@ const Settings = ({ navigation }) => {
         {
           text: "Cancelar",
           onPress: () => {},
-          style: "cancel"
+          style: "cancel",
         },
-        { text: "Sair", onPress: () => navigation.navigate('Login') }
+        { text: "Sair", onPress: () => navigation.navigate('Login') },
       ]
     );
   };
@@ -68,7 +68,7 @@ const Settings = ({ navigation }) => {
       </View>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    backgroundColor: '#171717'
+    backgroundColor: '#171717',
   },
   card: {
     alignItems: 'center',
@@ -139,5 +139,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
-export default Settings;

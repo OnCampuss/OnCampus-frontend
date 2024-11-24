@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Mail, LockKeyhole } from "lucide-react-native";
 import ButtonLarge from "../../components/ButtonLarge";
 import GoogleLoginButton from './GoogleLoginButton';
+import { supabase } from "../../services/supabase";
 import FacebookLoginButton from './FacebookLoginButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const backgroundImage = require("../../images/mixed.jpg");
@@ -28,47 +29,68 @@ export default function LoginScreen({ onLogin }) {
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-const handleLogin = async () => {
-  try {
-    if (!email || !password) {
-      Alert.alert("Erro", "Por favor, preencha todos os campos");
-      return;
-    }
-
-    const response = await fetch("http://192.168.15.13:2000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      // Salva o token e os dados do usuário no AsyncStorage
-      await AsyncStorage.setItem("token", data.token);
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
-      Alert.alert("Sucesso", "Login realizado com sucesso");
-
-      // Verifica o tipo de usuário e redireciona para a tela correta
-      if (data.user.email === "motorista@teste.com") {
-        console.log("Redirecionando para DriverAccess...");
-        navigation.navigate('DriverAccess');
-      } else {
-        console.log("Redirecionando para Home...");
-        navigation.navigate("Home");
+  const handleLogin = async () => {
+    console.log('Login iniciado...');
+  
+    try {
+      if (!email || !password) {
+        Alert.alert('Erro', 'Por favor, preencha todos os campos');
+        return;
       }
-
-      onLogin(); // Callback para atualizar o estado de login
-    } else {
-      Alert.alert("Erro", data.message || "Falha no login");
+  
+      const response = await fetch('http://18.231.68.185:2000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log('Login bem-sucedido. Salvando token e dados do usuário...');
+  
+        // Armazenar o token e os dados do usuário no AsyncStorage
+        await AsyncStorage.setItem('token', data.token);
+        await AsyncStorage.setItem('user', JSON.stringify(data.user));
+  
+        // Chama a função onLogin
+        onLogin();
+  
+        // Exibe um alerta de sucesso
+        Alert.alert('Sucesso', 'Login realizado com sucesso');
+  
+        // Redireciona dependendo do tipo de usuário
+        if (data.user.email === 'motorista@teste.com') {
+          // Redireciona para a tela do motorista
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'DriverAccess' }],
+          });
+        } else if (data.user.email === 'travelmanager@teste.com') {
+          // Redireciona para a tela do Travel Manager
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'TravelManager' }],
+          });
+        } else {
+          // Redireciona para a tela principal (Home)
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        }
+      } else {
+        console.log('Falha no login:', data.message || 'Falha no login');
+        Alert.alert('Erro', data.message || 'Falha no login');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      Alert.alert('Erro', 'Erro ao tentar fazer login');
     }
-  } catch (error) {
-    Alert.alert("Erro", "Erro ao se conectar com o servidor");
-  }
-};
-
+  };
+  
 
   const navigateToSignUp = () => navigation.navigate("SignUpScreen");
   const navigateToForgotPassword = () => navigation.navigate("ForgotPasswordScreen");

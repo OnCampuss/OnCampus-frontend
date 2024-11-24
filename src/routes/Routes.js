@@ -22,6 +22,7 @@ import NotificationsScreen from '../pages/notifications/NotificationsScreen';
 import UserData from '../pages/home/UserData';
 import Documents from '../pages/personalData/Documents';
 import DriverAccess from '../pages/admin/DriverAccess';
+import TravelManager from '../pages/admin/TravelManager';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -132,9 +133,8 @@ export default function Routes() {
 
   const handleLogout = async () => {
     try {
-      // Remove o token do AsyncStorage
       await AsyncStorage.removeItem('token');
-      setIsLoggedIn(false); // Atualiza o estado para redirecionar para a tela de login
+      setIsLoggedIn(false); 
       Alert.alert('Logout', 'Você foi desconectado com sucesso.');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
@@ -254,6 +254,17 @@ export default function Routes() {
               headerStyle: { backgroundColor: '#171717' },
               headerTintColor: '#fff',
               headerTitle: () => <HeaderWithIcon title="Acesso do Motorista" />,
+              headerLeft: null,
+            }}
+          />
+            <Stack.Screen
+            name="TravelManager"
+            component={TravelManager}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: '#171717' },
+              headerTintColor: '#fff',
+              headerTitle: () => <HeaderWithIcon title="Administrador" />,
               headerLeft: null,
             }}
           />

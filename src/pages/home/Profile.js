@@ -18,7 +18,7 @@ export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
   const [userData, setUserData] = useState(null); // Estado para armazenar os dados do usuário
   const navigation = useNavigation(); 
-  
+
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -58,7 +58,7 @@ export default function Config() {
       navigation.dispatch(  // Redireciona para a tela de login
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Login' }],
+          routes: [{ name: 'Login' }],  // Redireciona para a tela de Login
         })
       );
       Alert.alert('Sucesso', 'Logout realizado com sucesso!');  // Exibe um alerta de sucesso
@@ -86,7 +86,7 @@ export default function Config() {
         </View>
 
         <View style={styles.cardContainer}>
-          <Card height={400} style={styles.card}>
+          <Card height={240} style={styles.card}>
             <View style={styles.cardContent}>
               <View style={styles.titleContainer}>
                 <UserRoundCogIcon size={24} color="#D4D4D8" />
@@ -103,19 +103,6 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Senha', 'Opção para editar senha')}>
-                <LockKeyhole size={24} color="#D4D4D8" />
-                <Text style={styles.titleWithIcon}>Senha</Text>
-                <ChevronRight size={24} color="#D4D4D8" />
-              </TouchableOpacity>
-              <HairLine />
-
-              <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Dados Contratuais', 'Opção para visualizar dados contratuais')}>
-                <ScrollText size={24} color="#D4D4D8" />
-                <Text style={styles.titleWithIcon}>Dados Contratuais</Text>
-                <ChevronRight size={24} color="#D4D4D8" />
-              </TouchableOpacity>
-              <HairLine />
 
               <TouchableOpacity style={styles.headerContainer} onPress={() => navigation.navigate('Documents')}>
                 <FileUser size={24} color="#D4D4D8" />
@@ -124,12 +111,6 @@ export default function Config() {
               </TouchableOpacity>
               <HairLine />
 
-              <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Endereço', 'Opção para editar endereço')}>
-                <MapPinHouseIcon size={24} color="#D4D4D8" />
-                <Text style={styles.titleWithIcon}>Endereço</Text>
-                <ChevronRight size={24} color="#D4D4D8" />
-              </TouchableOpacity>
-              <HairLine />
 
               <TouchableOpacity onPress={handleLogout} style={styles.headerContainer}>
                 <LogOut size={24} color="#D4D4D8" />
@@ -236,21 +217,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   subText: {
+    fontSize: 14,
     color: '#D4D4D8',
     textAlign: 'center',
-    marginHorizontal: 20,
-    fontSize: 10,
-    marginTop: 10,
+    marginBottom: 10,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalOverlay: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#171717',
+    padding: 20,
+    borderRadius: 10,
   },
   loadingContainer: {
     flex: 1,

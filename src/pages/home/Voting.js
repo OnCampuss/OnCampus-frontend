@@ -10,10 +10,10 @@ export default function Voting() {
   const [vote, setVote] = useState('');
   const [timeRemaining, setTimeRemaining] = useState('');
   const [secondsRemaining, setSecondsRemaining] = useState(0);
-  const [votes, setVotes] = useState([]); // Armazena votos existentes
+  const [votes, setVotes] = useState([]); 
 
   const userToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM2MzYyYmQxLTI3NjEtNGEzZS1hOTUzLTg2OTcxODNmOTdjZSIsImVtYWlsIjoidGVzdGUxMEB0ZXN0ZS5jb20iLCJpYXQiOjE3MzIzOTYwNjMsImV4cCI6MTczNDk4ODA2M30.RNwgS6ck6DyGwetXWdNB0rXnamztFSCdKMt-E9ccwH8';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdiOTY1NTUxLTJjNDQtNGE4NS04YThkLWMyNzc3NTFkNDg4NCIsImVtYWlsIjoidGVzdGVAdGVzdGUuY29tIiwiaWF0IjoxNzMyNDg4MTU3LCJleHAiOjE3MzUwODAxNTd9.udoMrq8izIOBLAygTAMaJcCIRf4QQl5VFhYJcmDJtbU'; // token do usuário
 
     const handleVote = async () => {
       if (!vote) {
@@ -21,7 +21,6 @@ export default function Voting() {
         return;
       }
     
-      // Mapear as opções de voto para os campos da API
       const voteMapping = {
         "Vou e volto": { vou: true, volto: true, naoVou: false },
         "Apenas vou": { vou: true, volto: false, naoVou: false },
@@ -32,9 +31,9 @@ export default function Voting() {
       const votePayload = voteMapping[vote];
     
       try {
-        const travelId = "edec26d1-9d61-4f3e-883e-9675643e846b"; // ID da viagem
+        const travelId = "86f7d189-ee63-415c-927e-b9057e546ef8"; // ID da viagem
         const response = await fetch(
-          `http://192.168.15.13:2000/api/travels/${travelId}/votes`,
+          `http://18.231.68.185:2000/api/travels/${travelId}/votes`,
           {
             method: 'POST',
             headers: {
@@ -64,7 +63,7 @@ export default function Voting() {
 
   const loadVotes = async () => {
     try {
-      const response = await fetch('http://192.168.15.13:2000/api/votes', {
+      const response = await fetch('http://18.231.68.185:2000/api/votes', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${userToken}`,

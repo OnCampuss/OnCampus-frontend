@@ -7,7 +7,7 @@ import HairLine from '../../components/HairLine';
 
 const backgroundImage = require('../../images/Group.png');
 
-const UserData = ({ navigation }) => {
+export default function UserData({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [fullName, setFullName] = useState('João Silva');
     const [email, setEmail] = useState('joaosilva@gmail.com');
@@ -105,7 +105,7 @@ const UserData = ({ navigation }) => {
             </View>
         </ImageBackground>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -213,5 +213,3 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
 });
-
-export default UserData;

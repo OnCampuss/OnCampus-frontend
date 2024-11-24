@@ -26,7 +26,7 @@ const formatCPF = (cpf) => {
 };
 
 export default function SignUpScreen() {
-  const [nome, setNome] = useState("");  
+  const [name, setName] = useState("");  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpf, setCpf] = useState("");  // Novo campo CPF
@@ -37,14 +37,14 @@ export default function SignUpScreen() {
   const navigation = useNavigation();
 
   const handleSignUp = async () => {
-    if (!nome || !email || !password || !cpf || !semestre || !curso || !matricula) {
+    if (!name || !email || !password || !cpf || !semestre || !curso || !matricula) {
       Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
       return;
     }
   
     console.log("Iniciando cadastro...");
     console.log("Dados enviados:", {
-      nome,
+      name,
       email,
       password: "***",  // Ocultando a senha nos logs
       cpf,
@@ -54,13 +54,13 @@ export default function SignUpScreen() {
     });
   
     try {
-      const response = await fetch("http://192.168.15.13:2000/api/auth/register", {
+      const response = await fetch("http://18.231.68.185:2000/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nome,
+          name,
           email,
           password,
           cpf,
@@ -115,8 +115,8 @@ export default function SignUpScreen() {
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="Nome"
-                value={nome}
-                onChangeText={setNome}
+                value={name}
+                onChangeText={setName}
                 style={styles.input}
                 placeholderTextColor="#fff"
               />

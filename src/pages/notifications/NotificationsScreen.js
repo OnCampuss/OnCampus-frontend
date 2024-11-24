@@ -11,7 +11,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const NotificationsScreen = () => {
+export default function NotificationsScreen() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
 
@@ -83,7 +83,7 @@ const NotificationsScreen = () => {
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -120,5 +120,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default NotificationsScreen;
