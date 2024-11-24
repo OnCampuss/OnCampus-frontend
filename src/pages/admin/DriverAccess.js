@@ -1,128 +1,232 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import * as LocationAPI from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, ImageBackground, TextInput, FlatList } from 'react-native';
-import { ClockArrowUp, SquarePlus } from 'lucide-react-native';
-import Card from '../../components/Card';
-import ButtonSmall from '../../components/ButtonSmall';
+import MapViewDirections from 'react-native-maps-directions';
+import { GOOGLE_MAPS_APIKEY } from '../../config/config';
+import Title from '../../components/Title';
 import Line from '../../components/Line';
 
-const backgroundImage = require('../../images/Group.png');
+export default function DriverAccess() {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [showRoute, setShowRoute] = useState(false);
+  const [routeInfo, setRouteInfo] = useState({ distance: null, duration: null });
 
-export default function TravelManager({ navigation }) {
-  const [nameViagem, setNameViagem] = useState("");
-  const [destinoViagem, setDestinoViagem] = useState("");
-  const [travels, setTravels] = useState([]);
-  const [userId, setUserId] = useState(123); 
-  const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk4MzRmYTViLWMzMjAtNGZiNy05NzMxLWIyZDQwYmYyNjE2YiIsImVtYWlsIjoidHJhdmVsbWFuYWdlckB0ZXN0ZS5jb20iLCJpYXQiOjE3MzI0ODYwNjgsImV4cCI6MTczNTA3ODA2OH0.XZuBLFH_-dqkctXmZJiRD1DakG69VxGCz0CIqRce8Yw");
+  const startOptions = [
+    {
+      latitude: -28.287555,
+      longitude: -52.793474,
+      address: 'Av. Flores da Cunha, 4800 - Centro, Carazinho - RS, 99500-000',
+    },
+    {
+      latitude: -28.281050,
+      longitude: -52.789120,
+      address: 'R. Alexandre da Motta, 724 - Centro, Carazinho - RS, 99500-000',
+    },
+  ];
+
+  const destinationOptions = [
+    {
+      latitude: -28.262944,
+      longitude: -52.408456,
+      address: 'Atitus Educação, Passo Fundo - RS',
+    },
+    {
+      latitude: -28.257222,
+      longitude: -52.405500,
+      address: 'Pobris, Passo Fundo - RS',
+    },
+  ];
+
+  const [selectedStart, setSelectedStart] = useState(startOptions[0]);
+  const [selectedDestination, setSelectedDestination] = useState(
+    destinationOptions[0]
+  );
+
+  const [isStartModalVisible, setStartModalVisible] = useState(false);
+  const [isDestinationModalVisible, setDestinationModalVisible] = useState(false);
 
   useEffect(() => {
-    fetch("http://18.231.68.185:2000/api/travels", {
-      headers: {
-        'Authorization': `Bearer ${token}`, 
-      },
-    })
-      .then(response => response.json())
-      .then(data => setTravels(data.travel))
-      .catch(error => console.error(error));
-  }, [token]);
-
-  const handleCreateTrip = async () => {
-    try {
-      if (!nameViagem || !destinoViagem) {
-        Alert.alert("Erro", "Por favor, preencha todos os campos");
+    const getLocation = async () => {
+      const { status } = await LocationAPI.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permissão de localização negada.');
         return;
       }
 
-      const response = await fetch("http://192.168.0.107:3000/api/travels", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({ 
-          nameViagem, 
-          destinoViagem, 
-          userId 
-        }),
-      });
+      const currentLocation = await LocationAPI.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    };
 
-      const data = await response.json();
+    getLocation();
+  }, []);
 
-      if (response.ok) {
-        Alert.alert("Sucesso", "Viagem criada com sucesso!");
-        setNameViagem("");
-        setDestinoViagem("");
-        setTravels(prevTravels => [...prevTravels, data.travel]); 
-      } else {
-        Alert.alert("Erro", data.message || "Ocorreu um erro ao criar a viagem.");
-      }
-    } catch (error) {
-      Alert.alert("Erro", "Não foi possível criar a viagem. Verifique sua conexão.");
-    }
+  const handleRouteReady = (result) => {
+    setRouteInfo({
+      distance: result.distance,
+      duration: result.duration,
+    });
   };
 
   return (
-    <ImageBackground
-      source={backgroundImage}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
-        <Card width={362} height={290} style={[styles.card, styles.topCard]}>
-          <View style={styles.titleContainer}>
-            <SquarePlus size={24} color="#fff" style={styles.icon} />
-            <Text style={styles.title}>Criação de viagem</Text>
-          </View>
-          <Line />
-          <View style={styles.inputContainer}>
-            <TextInput
-              value={nameViagem}
-              onChangeText={setNameViagem}
-              style={styles.input}
-              placeholder="Nome e Data da viagem"
-              placeholderTextColor="#aaa"
-            />
-            <TextInput
-              value={destinoViagem}
-              onChangeText={setDestinoViagem}
-              style={styles.input}
-              placeholder="Destino"
-              placeholderTextColor="#aaa"
-            />
-          </View>
-          <View style={styles.createContainer}>
-            <ButtonSmall title="Criar viagem" onPress={handleCreateTrip} />
-          </View>
-        </Card>
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        region={
+          location
+            ? {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }
+            : undefined
+        }
+        showsUserLocation
+      >
+        <Marker
+          coordinate={{
+            latitude: selectedStart.latitude,
+            longitude: selectedStart.longitude,
+          }}
+          title="Ponto de Partida"
+          description={selectedStart.address}
+        />
+        <Marker
+          coordinate={{
+            latitude: selectedDestination.latitude,
+            longitude: selectedDestination.longitude,
+          }}
+          title="Destino"
+          description={selectedDestination.address}
+        />
 
-        <Card width={362} height={330} style={styles.card}>
-          <View style={styles.titleContainer}>
-            <ClockArrowUp size={24} color="#fff" style={styles.icon} />
-            <Text style={styles.title}>Histórico de viagens</Text>
-          </View>
-          <Line />
-          <FlatList
-            data={travels}
-            renderItem={({ item }) => (
-              <View style={styles.cardHistorico}>
-                <View style={styles.cardContent}>
-                  <ClockArrowUp size={24} color="#fff" style={styles.iconHistorico} />
-                  <View>
-                    <Text style={styles.textHistoricoTitle}>{item.nameViagem}</Text>
-                    <Text style={styles.textHistoricoDestino}>Destino: {item.destinoViagem}</Text>
-                  </View>
-                </View>
-              </View>
-            )}
-            keyExtractor={(item) => item.id.toString()}
+        {showRoute && (
+          <MapViewDirections
+            origin={{
+              latitude: selectedStart.latitude,
+              longitude: selectedStart.longitude,
+            }}
+            destination={{
+              latitude: selectedDestination.latitude,
+              longitude: selectedDestination.longitude,
+            }}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={3}
+            strokeColor="blue"
+            onReady={handleRouteReady}
           />
-        </Card>
+        )}
+      </MapView>
+
+      <View style={styles.card}>
+        <Title>Configurar Rota</Title>
+        <Line />
+        <Text style={{ color: '#fff', marginBottom: 10, marginTop: 5 }}>
+          Ponto de partida:
+        </Text>
+        <TouchableOpacity
+          style={styles.optionButton}
+          onPress={() => setStartModalVisible(true)}
+        >
+          <Text style={styles.optionText}>
+            {selectedStart.address || 'Escolher ponto de partida'}
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.optionText}>Ponto de destino:</Text>
+        <TouchableOpacity
+          style={styles.optionButton}
+          onPress={() => setDestinationModalVisible(true)}
+        >
+          <Text style={styles.optionText}>
+            {selectedDestination.address || 'Escolher destino'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowRoute(true)}
+        >
+          <Text style={styles.buttonText}>Iniciar Rota</Text>
+        </TouchableOpacity>
+
+        {routeInfo.distance && routeInfo.duration && (
+          <View style={styles.routeInfo}>
+            <Text style={styles.routeInfoText}>
+              Informações: {' '} 
+              <Text style={styles.distanceText}>{routeInfo.distance.toFixed(2)} km </Text> e {' '} 
+              <Text style={styles.durationText}>{routeInfo.duration.toFixed(2)} minutos</Text>
+            </Text>
+          </View>
+        )}
       </View>
-    </ImageBackground>
+
+      <Modal
+        transparent={true}
+        visible={isStartModalVisible}
+        animationType="slide"
+        onRequestClose={() => setStartModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Escolha o ponto de partida:</Text>
+            {startOptions.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.modalOptionButton}
+                onPress={() => {
+                  setSelectedStart(option);
+                  setStartModalVisible(false);
+                }}
+              >
+                <Text style={styles.optionText}>{option.address}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setStartModalVisible(false)}
+            >
+              <Text style={styles.modalCloseButtonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        transparent={true}
+        visible={isDestinationModalVisible}
+        animationType="slide"
+        onRequestClose={() => setDestinationModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Escolha o destino:</Text>
+            {destinationOptions.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.modalOptionButton}
+                onPress={() => {
+                  setSelectedDestination(option);
+                  setDestinationModalVisible(false);
+                }}
+              >
+                <Text style={styles.optionText}>{option.address}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setDestinationModalVisible(false)}
+            >
+              <Text style={styles.modalCloseButtonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -221,4 +325,4 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
-});
+});  
