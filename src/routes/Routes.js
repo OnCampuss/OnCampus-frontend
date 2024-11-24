@@ -130,6 +130,18 @@ export default function Routes() {
     setIsLoggedIn(true);
   };
 
+  const handleLogout = async () => {
+    try {
+      // Remove o token do AsyncStorage
+      await AsyncStorage.removeItem('token');
+      setIsLoggedIn(false); // Atualiza o estado para redirecionar para a tela de login
+      Alert.alert('Logout', 'Você foi desconectado com sucesso.');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      Alert.alert('Erro', 'Não foi possível desconectar.');
+    }
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -143,7 +155,10 @@ export default function Routes() {
           </>
         ) : (
           <>
-            <Stack.Screen name="Home" component={TabNavigator} />
+            <Stack.Screen name="Home">
+              {(props) => <TabNavigator {...props} onLogout={handleLogout} />}
+            </Stack.Screen>
+            
             <Stack.Screen
               name="Finance"
               component={Finance}
@@ -155,7 +170,7 @@ export default function Routes() {
                 headerRight: () => <HeaderRightBell navigation={navigation} />,
               })}
             />
-            <Stack.Screen
+                        <Stack.Screen
               name="PaymentMethod"
               component={PaymentMethod}
               options={({ navigation }) => ({
@@ -232,16 +247,18 @@ export default function Routes() {
               }}
             />
             <Stack.Screen
-              name="DriverAccess"
-              component={DriverAccess}
-              options={{
-                headerShown: true,
-                headerStyle: { backgroundColor: '#171717' },
-                headerTintColor: '#fff',
-                headerTitle: () => <HeaderWithIcon title="Acesso do Motorista" />,
-                headerLeft: null,
-              }}
-            />
+            name="DriverAccess"
+            component={DriverAccess}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: '#171717' },
+              headerTintColor: '#fff',
+              headerTitle: () => <HeaderWithIcon title="Acesso do Motorista" />,
+              headerLeft: null,
+            }}
+          />
+
+            
           </>
         )}
       </Stack.Navigator>

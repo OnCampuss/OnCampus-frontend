@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ImageBackground, Image, Text, Modal, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Card from '../../components/Card';
@@ -7,8 +7,8 @@ import HairLine from '../../components/HairLine';
 import { UserRoundCogIcon, UserIcon, ChevronRight, LockKeyhole, ScrollText, FileUser, MapPinHouseIcon, LogOut } from 'lucide-react-native';
 import { supabase } from '../../services/supabase';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
-import LogoutButton from "../../components/LogoutButton";
 
 const backgroundImage = require('../../images/Group.png');
 const bannerImage = require('../../images/banner.jpg');
@@ -16,57 +16,71 @@ const profileImage = require('../../images/profile.jpg');
 
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [userData, setUserData] = useState(null); // Estado para armazenar os dados do usuário
   const navigation = useNavigation(); 
-  const userData = { enrollmentNumber: '123456789' };
   
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
+  // Carregar dados do usuário ao iniciar a tela
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          setUserData(parsedUser); // Atualiza os dados do estado
+        } else {
+          console.log('Nenhum dado de usuário encontrado');
+        }
+      } catch (error) {
+        console.error("Erro ao carregar os dados do usuário", error);
+        Alert.alert("Erro", "Não foi possível carregar os dados do usuário.");
+      }
+    };
 
+    loadUserData();
+  }, []);
+
+  // Caso os dados do usuário ainda não tenham sido carregados, mostrar uma tela de carregamento
+  if (!userData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Carregando...</Text>
+      </View>
+    );
+  }
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
-      navigation.dispatch(
+      await supabase.auth.signOut();  // Desloga o usuário
+      navigation.dispatch(  // Redireciona para a tela de login
         CommonActions.reset({
           index: 0,
           routes: [{ name: 'Login' }],
         })
       );
-      Alert.alert('Sucesso', 'Logout realizado com sucesso!');
+      Alert.alert('Sucesso', 'Logout realizado com sucesso!');  // Exibe um alerta de sucesso
     } catch (error) {
       console.error('Erro ao deslogar:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao realizar o logout.');
+      Alert.alert('Erro', 'Ocorreu um erro ao realizar o logout.');  // Exibe um alerta de erro
     }
   };
+
   return (
-    <ImageBackground 
-      source={backgroundImage}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.bannerContainer}>
-          <ImageBackground 
-            source={bannerImage}
-            style={styles.banner}
-            resizeMode="cover"
-          />
+          <ImageBackground source={bannerImage} style={styles.banner} resizeMode="cover" />
         </View>
         <View style={styles.profileContainer}>
           <Image source={profileImage} style={styles.profileImage} />
           <View style={styles.infoContainer}>
-            <Title>John Doe</Title>
-            <Text style={styles.subtitle}>Ciência da Computação</Text>
+            <Text style={styles.titleName}>{userData.name}</Text>
+            <Text style={styles.subtitle}>{userData.curso}</Text>
             <TouchableOpacity onPress={toggleModal}>
-              <QRCode
-                value={userData.enrollmentNumber}
-                size={120}
-                color='#ffffff'
-                backgroundColor='transparent'
-                style={styles.qrCode}
-              />
+              <QRCode value={userData.enrollmentNumber} size={120} color='#ffffff' backgroundColor='transparent' style={styles.qrCode} />
             </TouchableOpacity>
           </View>
         </View>
@@ -85,7 +99,6 @@ export default function Config() {
               <TouchableOpacity style={styles.headerContainer} onPress={() => navigation.navigate('UserData')}>
                 <UserIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Pessoais</Text>
-                <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
               </TouchableOpacity>
               <HairLine />
@@ -93,7 +106,6 @@ export default function Config() {
               <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Senha', 'Opção para editar senha')}>
                 <LockKeyhole size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Senha</Text>
-                <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
               </TouchableOpacity>
               <HairLine />
@@ -101,7 +113,6 @@ export default function Config() {
               <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Dados Contratuais', 'Opção para visualizar dados contratuais')}>
                 <ScrollText size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Dados Contratuais</Text>
-                <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
               </TouchableOpacity>
               <HairLine />
@@ -109,7 +120,6 @@ export default function Config() {
               <TouchableOpacity style={styles.headerContainer} onPress={() => navigation.navigate('Documents')}>
                 <FileUser size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Documentos</Text>
-                <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
               </TouchableOpacity>
               <HairLine />
@@ -117,7 +127,6 @@ export default function Config() {
               <TouchableOpacity style={styles.headerContainer} onPress={() => Alert.alert('Endereço', 'Opção para editar endereço')}>
                 <MapPinHouseIcon size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Endereço</Text>
-                <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
               </TouchableOpacity>
               <HairLine />
@@ -125,36 +134,17 @@ export default function Config() {
               <TouchableOpacity onPress={handleLogout} style={styles.headerContainer}>
                 <LogOut size={24} color="#D4D4D8" />
                 <Text style={styles.titleWithIcon}>Sair do Aplicativo</Text>
-                <View style={{ flex: 1 }} />
                 <ChevronRight size={24} color="#D4D4D8" />
               </TouchableOpacity>
             </View>
           </Card>
-          <TouchableOpacity onPress={handleLogout} style={styles.headerContainer}>
-  <LogOut size={24} color="#D4D4D8" />
-  <Text style={styles.titleWithIcon}>Sair do Aplicativo</Text>
-  <View style={{ flex: 1 }} />
-  <ChevronRight size={24} color="#D4D4D8" />
-</TouchableOpacity>
-
         </View>
-
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={toggleModal}
-      >
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
-            <QRCode
-              value={userData.enrollmentNumber}
-              size={200}
-              color='#fff'
-              backgroundColor='transparent'
-            />
+            <QRCode value={userData.enrollmentNumber} size={200} color='#fff' backgroundColor='transparent' />
           </TouchableOpacity>
         </View>
       </Modal>
@@ -171,12 +161,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'flex-start',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
   bannerContainer: {
     width: '100%',
     height: 150,
@@ -186,10 +170,6 @@ const styles = StyleSheet.create({
   banner: {
     width: '100%',
     height: '100%',
-  },
-  cardContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   profileContainer: {
     justifyContent: 'center',
@@ -208,11 +188,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  titleName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
   subtitle: {
     fontSize: 18,
-    fontWeight: 'medium',
     color: '#ffffff',
     marginBottom: 10,
+  },
+  qrCode: {
+    marginTop: 10,
+  },
+  cardContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  card: {
+    width: '90%',
+    marginTop: 20,
+  },
+  cardContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 10,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -235,21 +242,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 10,
   },
-  cardContent: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: 5,
-    paddingTop: 10,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   modalOverlay: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#171717',
   },
 });

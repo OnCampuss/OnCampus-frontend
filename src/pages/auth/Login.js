@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -15,83 +15,76 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Mail, LockKeyhole } from "lucide-react-native";
-import { supabase } from "../../services/supabase";
 import ButtonLarge from "../../components/ButtonLarge";
-import Icon from "react-native-vector-icons/FontAwesome";
 import GoogleLoginButton from './GoogleLoginButton';
 import FacebookLoginButton from './FacebookLoginButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const backgroundImage = require("../../images/mixed.jpg");
+import Icon from "react-native-vector-icons/FontAwesome";
 const logoImage = require("../../../assets/logo.png");
 
-const LoginScreen = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-  // Função para lidar com o login
-  const handleLogin = async () => {
-    console.log('Login iniciado...');
-    try {
-      if (!email || !password) {
-        console.log('Campos de email ou senha vazios');
-        Alert.alert('Erro', 'Por favor, preencha todos os campos');
-        return;
-      }
-
-      console.log('Enviando dados para o servidor...');
-      const response = await fetch('http://192.168.15.13:2000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      console.log('Resposta recebida do servidor:', response);
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('Login bem-sucedido. Salvando o token...');
-        await AsyncStorage.setItem('token', data.token);
-        Alert.alert('Sucesso', 'Login realizado com sucesso');
-        console.log('Login bem-sucedido!');
-
-        // Chama a função onLogin que foi passada via props
-        onLogin();
-      } else {
-        console.log('Falha no login:', data.message || 'Falha no login');
-        Alert.alert('Erro', data.message || 'Falha no login');
-      }
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      if (error instanceof TypeError) {
-        Alert.alert('Erro de Conexão', 'Não foi possível se conectar ao servidor');
-      } else {
-        Alert.alert('Erro', 'Erro ao se conectar com o servidor');
-      }
+const handleLogin = async () => {
+  try {
+    if (!email || !password) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos");
+      return;
     }
-  };
+
+    const response = await fetch("http://192.168.15.13:2000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Salva o token e os dados do usuário no AsyncStorage
+      await AsyncStorage.setItem("token", data.token);
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+      Alert.alert("Sucesso", "Login realizado com sucesso");
+
+      // Verifica o tipo de usuário e redireciona para a tela correta
+      if (data.user.email === "motorista@teste.com") {
+        console.log("Redirecionando para DriverAccess...");
+        navigation.navigate('DriverAccess');
+      } else {
+        console.log("Redirecionando para Home...");
+        navigation.navigate("Home");
+      }
+
+      onLogin(); // Callback para atualizar o estado de login
+    } else {
+      Alert.alert("Erro", data.message || "Falha no login");
+    }
+  } catch (error) {
+    Alert.alert("Erro", "Erro ao se conectar com o servidor");
+  }
+};
+
 
   const navigateToSignUp = () => navigation.navigate("SignUpScreen");
   const navigateToForgotPassword = () => navigation.navigate("ForgotPasswordScreen");
 
-  const handleLogout = () => {
-    supabase.auth.signOut();
-    navigation.navigate("Login");
-  };
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
           <View style={styles.container}>
             <Image source={logoImage} style={styles.logo} />
-            <Text style={styles.welcomeMessage}>Seu aplicativo de transporte universitário!</Text>
+            <Text style={styles.welcomeMessage}>
+              Seu aplicativo de transporte universitário!
+            </Text>
             <View style={styles.inputContainer}>
               <Mail size={20} color="#887E7E" style={styles.icon} />
               <TextInput
@@ -120,8 +113,7 @@ const LoginScreen = ({ onLogin }) => {
               <Text style={styles.linkText}>
                 Não possui cadastro? <Text style={styles.linkTextHighlight}>Cadastre-se</Text>
               </Text>
-            </TouchableOpacity>
-            <Text style={styles.socialLoginText}>ou</Text>
+           <Text style={styles.socialLoginText}>ou</Text>
             <View style={styles.iconContainer}>
               <FacebookLoginButton style={styles.icon} />
               <GoogleLoginButton style={styles.icon} />
@@ -131,6 +123,7 @@ const LoginScreen = ({ onLogin }) => {
                 </View>
               </TouchableOpacity>
             </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPassword}>
               <Text style={styles.linkText}>
                 Esqueceu a senha? <Text style={styles.linkTextHighlight}>Clique aqui</Text>
@@ -141,7 +134,7 @@ const LoginScreen = ({ onLogin }) => {
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
   background: {
@@ -221,5 +214,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-export default LoginScreen;

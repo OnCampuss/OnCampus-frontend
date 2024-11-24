@@ -18,21 +18,41 @@ import ButtonLarge from "../../components/ButtonLarge";
 
 const backgroundImage = require("../../images/mixed.jpg");
 
+// Função para formatar o CPF com pontos e traço
+const formatCPF = (cpf) => {
+  return cpf
+    .replace(/\D/g, "") // Remove todos os caracteres não numéricos
+    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Aplica a formatação
+};
+
 export default function SignUpScreen() {
   const [nome, setNome] = useState("");  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cpf, setCpf] = useState("");  // Novo campo CPF
+  const [semestre, setSemestre] = useState("");  // Novo campo Semestre
+  const [curso, setCurso] = useState("");  // Novo campo Curso
+  const [matricula, setMatricula] = useState("");  // Novo campo Matrícula
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
   const handleSignUp = async () => {
+    if (!nome || !email || !password || !cpf || !semestre || !curso || !matricula) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+  
     console.log("Iniciando cadastro...");
     console.log("Dados enviados:", {
       nome,
       email,
-      password: "***", // Ocultando a senha nos logs
+      password: "***",  // Ocultando a senha nos logs
+      cpf,
+      semestre,
+      curso,
+      matricula,
     });
-
+  
     try {
       const response = await fetch("http://192.168.15.13:2000/api/auth/register", {
         method: "POST",
@@ -43,22 +63,24 @@ export default function SignUpScreen() {
           nome,
           email,
           password,
+          cpf,
+          semestre,
+          curso,
+          matricula,  // Incluindo a matrícula nos dados enviados
         }),
       });
-
-      console.log("Resposta do servidor:", {
-        status: response.status,
-        headers: response.headers.map, // Exibe os cabeçalhos recebidos
-      });
-
+  
+      console.log("Resposta da API recebida:", response.status);
       const data = await response.json();
-      console.log("Corpo da resposta:", data);
-
+      console.log("Resposta do servidor:", data);
+  
       if (response.ok) {
+        console.log("Cadastro realizado com sucesso!");
         Alert.alert("Sucesso", "Usuário registrado com sucesso!");
         navigation.navigate("Login");
       } else {
-        Alert.alert("Erro", data.error || "Erro desconhecido.");
+        console.log("Erro ao registrar usuário:", data.message || "Erro desconhecido.");
+        Alert.alert("Erro", data.message || "Erro desconhecido.");
       }
     } catch (error) {
       console.error("Erro inesperado:", error);
@@ -68,6 +90,12 @@ export default function SignUpScreen() {
 
   const navigateToLogin = () => {
     navigation.navigate("Login");
+  };
+
+  // Função para atualizar o estado do CPF com formatação
+  const handleCpfChange = (text) => {
+    const formattedCpf = formatCPF(text);
+    setCpf(formattedCpf);
   };
 
   return (
@@ -127,6 +155,54 @@ export default function SignUpScreen() {
                   <Eye size={20} color="#887E7E" />
                 )}
               </TouchableOpacity>
+            </View>
+
+            {/* Novo campo CPF com formatação */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="CPF"
+                value={cpf}
+                onChangeText={handleCpfChange}  // Chama a função para formatar o CPF
+                keyboardType="numeric"
+                maxLength={14}  // Limita o CPF a 14 caracteres (formato 000.000.000-00)
+                style={styles.input}
+                placeholderTextColor="#fff"
+              />
+            </View>
+
+            {/* Novo campo Semestre */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Semestre"
+                value={semestre}
+                onChangeText={setSemestre}
+                keyboardType="numeric"
+                style={styles.input}
+                placeholderTextColor="#fff"
+              />
+            </View>
+
+            {/* Novo campo Curso */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Curso"
+                value={curso}
+                onChangeText={setCurso}
+                style={styles.input}
+                placeholderTextColor="#fff"
+              />
+            </View>
+
+            {/* Novo campo Matrícula */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Matrícula"
+                value={matricula}
+                onChangeText={setMatricula}
+                keyboardType="numeric"
+                style={styles.input}
+                placeholderTextColor="#fff"
+              />
             </View>
 
             <ButtonLarge title="Cadastrar" onPress={handleSignUp} />

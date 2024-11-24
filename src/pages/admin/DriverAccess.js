@@ -7,7 +7,7 @@ import { GOOGLE_MAPS_APIKEY } from '../../config/config';
 import Title from '../../components/Title';
 import Line from '../../components/Line';
 
-export default function RouteScreen() {
+export default function DriverAccess() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [showRoute, setShowRoute] = useState(false);

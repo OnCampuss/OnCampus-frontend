@@ -1,31 +1,59 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, Modal, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, Modal, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import { BlurView } from 'expo-blur';
-
-import mousePointer from '../images/mousePointer.png'; 
-
-const userData = {
-  title: 'Estudante',
-  name: 'João Silva',
-  cpf: '123.456.789-00',
-  enrollmentNumber: '20231002',
-  semester: '5º Semestre',
-  status: 'Ativo',
-  description: 'Aluno de Engenharia de Software',
-  imageUrl: 'https://www.4devs.com.br/4devs_gerador_imagem.php?acao=gerar_imagem&txt_largura=654&txt_altura=756&extensao=png&fundo_r=0.06274509803921569&fundo_g=0.996078431372549&fundo_b=0.9568627450980393&texto_r=0&texto_g=0&texto_b=0&texto=Gerador%20Imagem%20%234Devs&tamanho_fonte=10',
-};
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import mousePointer from '../images/mousePointer.png';
 
 const { width } = Dimensions.get('window');
 const cardWidth = width > 380 ? 380 : width * 0.9;
 
 export default function Carteirinha() {
+  const [userData, setUserData] = useState(null); // Estado para armazenar os dados do usuário
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+
+  useEffect(() => {
+    // Função para buscar os dados do usuário armazenados no AsyncStorage
+    const loadUserData = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          console.log('Dados carregados do AsyncStorage:', parsedUser); // Verifique se a matrícula está presente
+    
+          setUserData(parsedUser); // Armazena os dados do usuário no estado
+        } else {
+          console.log('Nenhum dado de usuário encontrado no AsyncStorage');
+        }
+      } catch (error) {
+        console.error("Erro ao carregar os dados do usuário", error);
+        Alert.alert("Erro", "Não foi possível carregar os dados do usuário.");
+      }
+    };
+    
+
+    loadUserData(); // Chama a função para carregar os dados
+  }, []);
+
+  useEffect(() => {
+    if (userData) {
+      console.log('Dados do usuário carregados no estado:', userData); // Log quando os dados forem definidos no estado
+    }
+  }, [userData]);
+
+  if (!userData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Carregando...</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -38,16 +66,17 @@ export default function Carteirinha() {
         <View style={styles.infoContainer}>
           <Text style={styles.titleName}>Carteirinha - {userData.name}</Text>
           <Text style={styles.cpf}>CPF: {userData.cpf}</Text>
-          <Text style={styles.enrollmentNumber}>Matrícula: {userData.enrollmentNumber}</Text>
-          <Text style={styles.semester}>Semestre: {userData.semester}</Text>
-          <Text style={styles.status}>Status: {userData.status}</Text>
-          <Text style={styles.description}>{userData.description}</Text>
+          <Text style={styles.enrollmentNumber}>Matrícula: {userData.matricula}</Text>
+          <Text style={styles.semester}>Semestre: {userData.semestre}</Text>
+          <Text style={styles.status}>Status: Ativo</Text>
+          {/* Alteração para exibir o nome do curso */}
+          <Text style={styles.description}>Aluno de {userData.curso}</Text> 
         </View>
         <View style={styles.qrImageContainer}>
-          <Image source={{ uri: userData.imageUrl }} style={styles.profileImage} />
+          <Image source={{ uri: `https://www.4devs.com.br/4devs_gerador_imagem.php?acao=gerar_imagem&txt_largura=654&txt_altura=756&extensao=png&fundo_r=0.06274509803921569&fundo_g=0.996078431372549&fundo_b=0.9568627450980393&texto_r=0&texto_g=0&texto_b=0&texto=${userData.name}&tamanho_fonte=10` }} style={styles.profileImage} />
           <TouchableOpacity onPress={toggleModal}>
             <QRCode
-              value={userData.enrollmentNumber}
+              value={userData.matricula} // Usando matrícula do usuário como valor para o QRCode
               size={80}
               color='#ffffff'
               backgroundColor='transparent'
@@ -67,7 +96,7 @@ export default function Carteirinha() {
           <TouchableOpacity style={styles.modalOverlay} onPress={toggleModal}>
             <Text style={styles.modalTitle}>Código para embarque</Text>
             <QRCode
-              value={userData.enrollmentNumber}
+              value={userData.matricula} // Usando matrícula do usuário como valor para o QRCode
               size={200}
               color='#000000'
               backgroundColor='transparent'
@@ -160,10 +189,15 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   mousePointer: {
-    width: 50, 
-    height: 50, 
-    marginTop: 20, 
-    left: 100, 
-    transform: [{ rotate: '-6deg' }], 
+    width: 50,
+    height: 50,
+    marginTop: 20,
+    left: 100,
+    transform: [{ rotate: '-6deg' }],
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });

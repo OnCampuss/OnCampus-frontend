@@ -1,15 +1,21 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { supabase } from "../services/supabase";
 
 const LogoutButton = ({ onLogout }) => {
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
-      onLogout();  // Chama a função de logout (pode ser passada via props para resetar estados ou navegar)
-      console.log("Logout bem-sucedido!");
+      // Remover o token do AsyncStorage
+      await AsyncStorage.removeItem('token');
+      Alert.alert('Logout', 'Você foi desconectado com sucesso.');
+  
+      // Navegar para a tela de login
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // Altere 'LoginScreen' para o nome correto da tela de login em sua navegação
+      });
     } catch (error) {
-      console.log("Erro ao fazer logout:", error.message);
+      console.error('Erro ao fazer logout:', error);
+      Alert.alert('Erro', 'Não foi possível desconectar.');
     }
   };
 
