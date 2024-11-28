@@ -122,7 +122,7 @@ export default function Voting() {
               </View>
               <Line />
               <Text style={styles.subtitle}>
-                Ônibus Atitus - Passo Fundo - 06/06/2025
+                Ônibus Atitus - Passo Fundo - 25/11/2024
               </Text>
               <View style={styles.optionsContainer}>
                 {['Vou e volto', 'Apenas vou', 'Apenas volto', 'Não vou hoje'].map((option) => (

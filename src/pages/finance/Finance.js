@@ -11,8 +11,8 @@ const backgroundImage = require('../../images/Group.png');
 
 const fetchInvoices = async () => {
   return [
-    { id: 1, month: 'Setembro', amount: '100,00' },
-    { id: 2, month: 'Outubro', amount: '120,00' },
+    { id: 1, month: 'Setembro', amount: '470,00' },
+    { id: 2, month: 'Outubro', amount: '470,00' },
   ];
 };
 
@@ -42,7 +42,7 @@ export default function Finance({ navigation }) {
     >
       <View style={styles.container}>
         <View style={styles.cardContainer}>
-          <Card height={170} style={styles.card}>
+          <Card height={200} style={styles.card}>
             <View style={styles.cardContent}>
               <View style={styles.titleWithIcon}>
                 <CircleDollarSign size={24} color="#D4D4D8" />
@@ -50,7 +50,7 @@ export default function Finance({ navigation }) {
               </View>
               <Line /> 
               <Text style={styles.cardSubtitle}>Sua fatura vence em</Text>
-              <Text style={styles.cardDueDate}>30/10/2024</Text>
+              <Text style={styles.cardDueDate}>10/12/2024</Text>
               <ButtonSmall
                 title="Pagar Fatura"
                 onPress={() => navigation.navigate('PaymentMethod')}

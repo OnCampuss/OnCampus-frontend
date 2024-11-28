@@ -16,21 +16,20 @@ const profileImage = require('../../images/profile.jpg');
 
 export default function Config() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [userData, setUserData] = useState(null); // Estado para armazenar os dados do usuário
+  const [userData, setUserData] = useState(null); 
   const navigation = useNavigation(); 
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
 
-  // Carregar dados do usuário ao iniciar a tela
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const user = await AsyncStorage.getItem('user');
         if (user) {
           const parsedUser = JSON.parse(user);
-          setUserData(parsedUser); // Atualiza os dados do estado
+          setUserData(parsedUser); 
         } else {
           console.log('Nenhum dado de usuário encontrado');
         }
@@ -43,7 +42,6 @@ export default function Config() {
     loadUserData();
   }, []);
 
-  // Caso os dados do usuário ainda não tenham sido carregados, mostrar uma tela de carregamento
   if (!userData) {
     return (
       <View style={styles.loadingContainer}>
@@ -54,17 +52,17 @@ export default function Config() {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();  // Desloga o usuário
-      navigation.dispatch(  // Redireciona para a tela de login
+      await supabase.auth.signOut();  
+      navigation.dispatch(  
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Login' }],  // Redireciona para a tela de Login
+          routes: [{ name: 'Login' }],  
         })
       );
-      Alert.alert('Sucesso', 'Logout realizado com sucesso!');  // Exibe um alerta de sucesso
+      Alert.alert('Sucesso', 'Logout realizado com sucesso!');  
     } catch (error) {
       console.error('Erro ao deslogar:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao realizar o logout.');  // Exibe um alerta de erro
+      Alert.alert('Erro', 'Ocorreu um erro ao realizar o logout.'); 
     }
   };
 
@@ -86,7 +84,7 @@ export default function Config() {
         </View>
 
         <View style={styles.cardContainer}>
-          <Card height={240} style={styles.card}>
+          <Card height={270} style={styles.card}>
             <View style={styles.cardContent}>
               <View style={styles.titleContainer}>
                 <UserRoundCogIcon size={24} color="#D4D4D8" />

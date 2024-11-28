@@ -1,86 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Alert, StyleSheet } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Bell, ChevronRight, CheckCircle } from 'lucide-react-native';
+import Title from '../../components/Title';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+export default function Notifications() {
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Nova Atualização Disponível', message: 'Atualize o aplicativo para a versão mais recente.', read: false },
+    { id: 2, title: 'Promoção Especial', message: 'Descontos exclusivos para você!', read: false },
+    { id: 3, title: 'Pagamento Confirmado', message: 'Seu pagamento foi processado com sucesso.', read: true },
+  ]);
 
-export default function NotificationsScreen() {
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
+  const markAllAsRead = () => {
+    const updatedNotifications = notifications.map((notification) => ({
+      ...notification,
+      read: true,
+    }));
+    setNotifications(updatedNotifications);
+    Alert.alert('Notificações', 'Todas as notificações foram marcadas como lidas.');
+  };
 
-  useEffect(() => {
-    const requestPermissions = async () => {
-      if (!Device.isDevice) {
-        Alert.alert('Notificações não funcionam em simuladores!');
-        return;
-      }
+  const markAsRead = (id) => {
+    const updatedNotifications = notifications.map((notification) =>
+      notification.id === id ? { ...notification, read: true } : notification
+    );
+    setNotifications(updatedNotifications);
+  };
 
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+  // Função para simular recebimento de nova notificação
+  const addNotification = (notification) => {
+    setNotifications([notification, ...notifications]);
+  };
 
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-
-      if (finalStatus !== 'granted') {
-        Alert.alert('Permissões para notificações foram negadas!');
-        return;
-      }
-
-      const token = await Notifications.getExpoPushTokenAsync();
-      setExpoPushToken(token.data);
-      console.log('Expo Push Token:', token.data);
+  // Simulação de uma nova notificação, que poderia ser chamada quando uma notificação for recebida
+  const simulateReceivedNotification = () => {
+    const newNotification = {
+      id: notifications.length + 1,
+      title: 'Nova Notificação 📬',
+      message: 'Esta é uma notificação de teste!',
+      read: false,
     };
-
-    requestPermissions();
-
-    const subscription = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-      console.log('Notificação recebida:', notification);
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  const sendNotification = async () => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Notificação Teste",
-        body: "Esta é uma notificação local de teste!",
-      },
-      trigger: { seconds: 2 },
-    });
+    addNotification(newNotification);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Configuração de Notificações</Text>
-      {expoPushToken ? (
-        <>
-          <Text style={styles.text}>Token do Push:</Text>
-          <Text style={styles.token}>{expoPushToken}</Text>
-        </>
-      ) : (
-        <Text style={styles.text}>Obtendo token...</Text>
-      )}
-      <Button title="Enviar Notificação" onPress={sendNotification} />
-      {notification && (
-        <View style={styles.notificationContainer}>
-          <Text style={styles.notificationTitle}>Notificação Recebida:</Text>
-          <Text>{notification.request.content.title}</Text>
-          <Text>{notification.request.content.body}</Text>
-        </View>
-      )}
+      <View style={styles.header}>
+        <Title>Seu Painel</Title>
+        <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
+          <Text style={styles.markAllText}>Marcar todas como lidas</Text>
+          <CheckCircle size={20} color="#2563EB" />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {notifications.map((notification) => (
+          <TouchableOpacity
+            key={notification.id}
+            style={[
+              styles.notificationCard,
+              notification.read ? styles.read : styles.unread,
+            ]}
+            onPress={() => {
+              Alert.alert(notification.title, notification.message);
+              markAsRead(notification.id);
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <Bell size={24} color={notification.read ? "#6B7280" : "#2563EB"} />
+            </View>
+            <View style={styles.textContainer}>
+              <Text style={styles.notificationTitle}>{notification.title}</Text>
+              <Text style={styles.notificationMessage}>{notification.message}</Text>
+            </View>
+            <ChevronRight size={24} color="#D4D4D8" />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Botão para simular nova notificação */}
+      <TouchableOpacity style={styles.newNotificationButton} onPress={simulateReceivedNotification}>
+        <Text style={styles.newNotificationText}>Simular Nova Notificação</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -88,35 +88,68 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#171717',
+    paddingTop: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 16,
+    paddingHorizontal: 20,
     marginBottom: 10,
   },
-  token: {
-    fontSize: 12,
-    color: 'gray',
-    marginBottom: 20,
-    textAlign: 'center',
+  markAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  notificationContainer: {
-    marginTop: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    backgroundColor: '#f9f9f9',
+  markAllText: {
+    color: '#2563EB',
+    fontSize: 16,
+    marginRight: 5,
+  },
+  scrollContainer: {
+    paddingHorizontal: 20,
+  },
+  notificationCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#27272A',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  iconContainer: {
+    marginRight: 15,
+  },
+  textContainer: {
+    flex: 1,
   },
   notificationTitle: {
-    fontSize: 18,
+    fontSize: 16,
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  notificationMessage: {
+    fontSize: 14,
+    color: '#D4D4D8',
+    marginTop: 5,
+  },
+  unread: {
+    backgroundColor: '#1F2937',
+  },
+  read: {
+    backgroundColor: '#27272A',
+  },
+  newNotificationButton: {
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#2563EB',
+    margin: 20,
+    borderRadius: 8,
+  },
+  newNotificationText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

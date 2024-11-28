@@ -18,21 +18,20 @@ import ButtonLarge from "../../components/ButtonLarge";
 
 const backgroundImage = require("../../images/mixed.jpg");
 
-// Função para formatar o CPF com pontos e traço
 const formatCPF = (cpf) => {
   return cpf
-    .replace(/\D/g, "") // Remove todos os caracteres não numéricos
-    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Aplica a formatação
+    .replace(/\D/g, "") 
+    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); 
 };
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [cpf, setCpf] = useState("");  // Novo campo CPF
-  const [semestre, setSemestre] = useState("");  // Novo campo Semestre
-  const [curso, setCurso] = useState("");  // Novo campo Curso
-  const [matricula, setMatricula] = useState("");  // Novo campo Matrícula
+  const [cpf, setCpf] = useState("");  
+  const [semestre, setSemestre] = useState("");  
+  const [curso, setCurso] = useState("");  
+  const [matricula, setMatricula] = useState("");  
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
@@ -46,7 +45,7 @@ export default function SignUpScreen() {
     console.log("Dados enviados:", {
       name,
       email,
-      password: "***",  // Ocultando a senha nos logs
+      password: "***",  
       cpf,
       semestre,
       curso,
@@ -66,7 +65,7 @@ export default function SignUpScreen() {
           cpf,
           semestre,
           curso,
-          matricula,  // Incluindo a matrícula nos dados enviados
+          matricula, 
         }),
       });
   
@@ -92,7 +91,6 @@ export default function SignUpScreen() {
     navigation.navigate("Login");
   };
 
-  // Função para atualizar o estado do CPF com formatação
   const handleCpfChange = (text) => {
     const formattedCpf = formatCPF(text);
     setCpf(formattedCpf);
@@ -157,20 +155,18 @@ export default function SignUpScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Novo campo CPF com formatação */}
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="CPF"
                 value={cpf}
-                onChangeText={handleCpfChange}  // Chama a função para formatar o CPF
+                onChangeText={handleCpfChange}  
                 keyboardType="numeric"
-                maxLength={14}  // Limita o CPF a 14 caracteres (formato 000.000.000-00)
+                maxLength={14}  
                 style={styles.input}
                 placeholderTextColor="#fff"
               />
             </View>
 
-            {/* Novo campo Semestre */}
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="Semestre"
@@ -182,7 +178,6 @@ export default function SignUpScreen() {
               />
             </View>
 
-            {/* Novo campo Curso */}
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="Curso"
@@ -193,7 +188,6 @@ export default function SignUpScreen() {
               />
             </View>
 
-            {/* Novo campo Matrícula */}
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="Matrícula"

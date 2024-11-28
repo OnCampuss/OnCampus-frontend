@@ -51,31 +51,24 @@ export default function LoginScreen({ onLogin }) {
       if (response.ok) {
         console.log('Login bem-sucedido. Salvando token e dados do usuário...');
   
-        // Armazenar o token e os dados do usuário no AsyncStorage
         await AsyncStorage.setItem('token', data.token);
         await AsyncStorage.setItem('user', JSON.stringify(data.user));
   
-        // Chama a função onLogin
         onLogin();
   
-        // Exibe um alerta de sucesso
         Alert.alert('Sucesso', 'Login realizado com sucesso');
   
-        // Redireciona dependendo do tipo de usuário
         if (data.user.email === 'motorista@teste.com') {
-          // Redireciona para a tela do motorista
           navigation.reset({
             index: 0,
             routes: [{ name: 'DriverAccess' }],
           });
         } else if (data.user.email === 'travelmanager@teste.com') {
-          // Redireciona para a tela do Travel Manager
           navigation.reset({
             index: 0,
             routes: [{ name: 'TravelManager' }],
           });
         } else {
-          // Redireciona para a tela principal (Home)
           navigation.reset({
             index: 0,
             routes: [{ name: 'Home' }],
@@ -135,16 +128,6 @@ export default function LoginScreen({ onLogin }) {
               <Text style={styles.linkText}>
                 Não possui cadastro? <Text style={styles.linkTextHighlight}>Cadastre-se</Text>
               </Text>
-           <Text style={styles.socialLoginText}>ou</Text>
-            <View style={styles.iconContainer}>
-              <FacebookLoginButton style={styles.icon} />
-              <GoogleLoginButton style={styles.icon} />
-              <TouchableOpacity style={styles.icon}>
-                <View style={styles.ovalIcon}>
-                  <Icon name="apple" size={30} color="#D4D4D8" />
-                </View>
-              </TouchableOpacity>
-            </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={navigateToForgotPassword} style={styles.forgotPassword}>
               <Text style={styles.linkText}>
